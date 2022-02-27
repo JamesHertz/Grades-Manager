@@ -7,15 +7,22 @@ import java.io.Serializable;
 public class EvalHelperClass implements EvalHelper, Serializable {
 
     private static final long serialVersionUID = -3364902666218938897L;
-    private final String name;
-    private final int number;
-    private final float grade;
+    private String name;
+    private int number;
+    private float grade;
+    private Student student;
 
     public EvalHelperClass(String name, int number, float grade){
         this.name = name;
         this.number = number;
         this.grade = grade;
     }
+
+    public EvalHelperClass(Student student, float grade){
+        this.student = student;
+        this.grade = grade;
+    }
+
     @Override
     public int number() {
         return number;
@@ -23,7 +30,7 @@ public class EvalHelperClass implements EvalHelper, Serializable {
 
     @Override
     public Student getStudent() {
-        return null;
+        return student;
     }
 
     @Override
@@ -32,7 +39,7 @@ public class EvalHelperClass implements EvalHelper, Serializable {
     }
 
     @Override
-    public float grade() {
+    public float getGrade() {
         return grade;
     }
 }

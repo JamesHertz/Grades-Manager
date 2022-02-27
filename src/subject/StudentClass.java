@@ -32,6 +32,7 @@ public class StudentClass implements Student, Serializable {
        evaluationsBySubject.put(slot.subjectId(), slot);
     }
 
+    // will not happen anymore
     @Override
     public void addEvaluation(EvalEntry eval) {
         String subject = eval.subjectId();

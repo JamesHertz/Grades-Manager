@@ -13,7 +13,7 @@ public class SubjectSlotClass implements SubjectSlot, Serializable{
     private static final long serialVersionUID = 0L;
     private final Subject subject;
     private final List<EvalEntry> evaluations;
-    private final Statistic statistic;
+    private final Statistic statistic; // think about this also
     private final Student student;
     public SubjectSlotClass(Student student, Subject subject){
         this.student = student;

@@ -8,16 +8,13 @@ import java.util.*;
 
 public class SheetHelperClass implements SheetHelper, Serializable {
 
-    private static final int DEFAULT_SIZE = 20;
-    private static final long serialVersionUID = -2142269003925284585L;
-    private final List<EvalHelper> evalHelpers;
-    private final Set<String> numbers;
+    private static final long serialVersionUID = 0L;
     private final String subject, evalId;
+    private final SortedMap<Integer, EvalHelper> evalHelpers; // think about it later
     public SheetHelperClass(String subject, String evalId){
         this.subject = subject;
         this.evalId = evalId;
-        numbers = new HashSet<>(DEFAULT_SIZE);
-        evalHelpers = new LinkedList<>();
+        evalHelpers = new TreeMap<>();
     }
     @Override
     public String subject() {
@@ -30,24 +27,28 @@ public class SheetHelperClass implements SheetHelper, Serializable {
     }
 
     @Override
-    public int getNumberOfEvalHelper() {
+    public void addEvalHelper(Student student, float grade) throws AlreadyEvaluatedException {
+        int number = student.number();
+        if(evalHelpers.containsKey(number))
+            throw new AlreadyEvaluatedException(number);
+        evalHelpers.put(number, new EvalHelperClass(student, grade));
+    }
+
+    @Override
+    public int size() {
         return evalHelpers.size();
     }
 
     @Override
     public void addEvalHelper(String name, int number, float grade) throws AlreadyEvaluatedException {
-        String realNumber = Integer.toString(number);
-        if(!numbers.add(realNumber))
+        if(evalHelpers.containsKey(number))
             throw new AlreadyEvaluatedException(number);
-        evalHelpers.add(new EvalHelperClass(name, number, grade));
+        evalHelpers.put(number, new EvalHelperClass(name, number, grade));
     }
 
     @Override
     public Iterator<EvalHelper> listAllHelper() {
-        return evalHelpers.iterator();
+        return evalHelpers.values().iterator();
     }
-
-
-
 
 }

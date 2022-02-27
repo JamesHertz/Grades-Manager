@@ -1,5 +1,5 @@
 TODO:
-    -> Refactor code
+    -> Refactor code [doing so]
     -> Start supporting etcs and being able to calculate the average grade
     // what about numbers to choose what is gonna be the final grade ??
     -> Define a way of specifying th formula 

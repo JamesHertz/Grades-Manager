@@ -63,7 +63,7 @@ public class GradesManagerClass implements GradesManager, Serializable {
         Iterator<EvalHelper> it = sheet.listAllHelper();
         while (it.hasNext()) {
             EvalHelper tmp = it.next();
-            eval.evaluate(getStudent(tmp.number(), tmp.name()), tmp.grade());
+            eval.evaluate(getStudent(tmp.number(), tmp.name()), tmp.getGrade());
         }
     }
 

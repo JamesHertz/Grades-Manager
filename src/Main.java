@@ -307,7 +307,7 @@ public class Main {
             sheet.addEvalHelper(name, number, grade);
         }
         manager.addSheetHelper(sheet);
-        System.out.printf(UPLOAD_MESSAGE, sheet.getNumberOfEvalHelper(), sheet.subject());
+        System.out.printf(UPLOAD_MESSAGE, sheet.size(), sheet.subject());
         input.close();
 
     }

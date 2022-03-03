@@ -1,7 +1,7 @@
 # Grades-Manager
 A way to check up on the big brain in your class
 
-##Changes:
+## Changes:
 <ol>
     <li>Refactor code</li>
     <ul>

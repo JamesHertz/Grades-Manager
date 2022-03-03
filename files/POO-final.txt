@@ -1,0 +1,241 @@
+59975  Afonso Duarte Guerreiro Batista 12.0
+59895  Afonso Guiomar Viegas de Assis Ribeiro 13.0
+59158  Afonso Miguel Velosa Gonçalves Proença -1.0
+61002  Afonso Neves Nunes 14.0
+60988  Alberto Daniel Alves Serra 17.0
+55336  Alexandre Mestre dos Santos Aleixo Dorotea 14.0
+60005  Alexandre Sampaio Branco da Silva Lebre 15.0
+59943  Ana Carolina Batoque Gadelha -1.0
+61025  Ana Maissa Antunes 14.0
+59801  Ana Margarida Correia Francisco -1.0
+59760  Ana Rafaela Oliveira Do Amaral Gourgel -1.0
+60000  André da Costa Seabra Lopes 15.0
+59905  André Martinho Pinto 18.0
+59831  André Nogueira Mendes -1.0
+59859  Andre Prior Gaspar 15.0
+59835  André Tomás Ribeiro 15.0
+59744  Artur Horal 15.0
+60929  Axel José Grand Maison da Silva -1.0
+59837  Barbara Cardoso Correia 17.0
+59940  Beatriz Isabel Martins Gonçalves -1.0
+59971  Beatriz Viveiros Palma -1.0
+59187  Bernardo Alexandre Vaz Calvo 18.0
+59956  Bernardo de Sena Rodrigues -1.0
+60311  Bernardo Filipe Duarte Viegas 13.0
+59778  Bernardo Geada de Brito 15.0
+59962  Bernardo João Ferreira Atalaia 17.0
+60012  Bernardo Rola Governo de Carvalho -1.0
+60019  Bruno Joaquim Moreira de Melo 15.0
+59171  Bruno Miguel Amaro Antão -1.0
+59815  Bruno Miguel de Sousa Bentes Baptista 15.0
+60011  Bruno Miguel Matias David 16.0
+57936  Carlos Benoliel Duarte Martins -1.0
+59748  Carolina Vieira Simonet 12.0
+59810  Catarina Isabel Valente Crespo 17.0
+60979  Catarina Rosa Páscoa Costa -1.0
+57089  Cleyton Alves Rodrigues Filho -1.0
+59797  Daniel da Silva Eugénio 15.0
+59889  Daniel Filipe Pires Gavinho 17.0
+60004  Daniel Gonçalves Fuseta Rosa Macau 19.0
+61162  Danny Francisco Brito Fernandes 17.0
+60973  David João Costa Castro 11.0
+59984  David Miguel Basílio Moreira 17.0
+59812  David Reis Mendes da Silva Pestana 14.0
+59893  Diogo Alexandre Nogueira da Costa 16.0
+60003  Diogo André Rosado Santos 15.0
+59832  Diogo Duarte Neves de Almeida 13.0
+59731  Diogo Filipe Gonçalves Dias 16.0
+59166  Diogo Filipe Santos Moreira 17.0
+60007  Diogo Gouveia dos Santos Pinto Pereira -1.0
+59969  Diogo Valentim de Carvalho Jesus -1.0
+59765  Duarte Manuel Cabrita da Cruz 16.0
+59791  Duarte Miguel da Cunha Terrível 13.0
+59912  Eduardo Miguel Xavier Fortunato -1.0
+60918  Érik Kelsson Abdula Salomão -1.0
+50859  Fábio Sultan Carrilho -1.0
+61088  Fernando Miguel da Silva Castanheira -1.0
+60191  Filipe José Almeida Leão 15.0
+47333  Francisco Alberto Duarte Guerreiro -1.0
+60082  Francisco Alexandre Santos de Sousa 13.0
+61028  Francisco dos Santos Vasco 14.0
+60220  Francisco Duarte Costa 13.0
+60816  Francisco José Lopes Silveira 15.0
+60313  Francisco José Rosa Freitas 16.0
+60059  Francisco Mendes Teixeira Salgado Silvano -1.0
+60179  Francisco Sáez de Azevedo -1.0
+60174  Francisco Tomás Esteves Gaspar Teixeira Moura 17.0
+60201  Francisco Xavier Fernandes Bizarro do Vale 19.0
+57256  Frederico Fernandez Peres de Oliveira 13.0
+60034  Frederico Miguel Biscoito Monteiro -1.0
+60247  Frederico Miguel Gonçalves Vieira Sampaio da Silva -1.0
+60310  Gonçalo Alexandre Barradas da Silva 16.0
+60309  Gonçalo Alexandre Varela Monteiro -1.0
+59204  Gonçalo da Cruz Farias 11.0
+60333  Gonçalo Fernandes Mateus 13.0
+60355  Gonçalo Filipe de Brito Gingeira 13.0
+60044  Gonçalo Gomes Rodrigues 17.0
+51784  Gonçalo Maria da Silva Matos -1.0
+60237  Gonçalo Mendes Antunes Lago Varanda -1.0
+60774  Gonçalo Miguel da Cruz Gomes 14.0
+60291  Gonçalo Pereira Duarte 14.0
+58254  Gonçalo Ribeiro Mateus -1.0
+60046  Gonçalo Tomás Caetano Cascais -1.0
+60236  Guilherme Aldinhas Poças 18.0
+51729  Guilherme Alexandre Scavone dos Santos Rato -1.0
+60045  Guilherme Cruz Fernandes 19.0
+60182  Guilherme Filipe Santana Pinto Santana 16.0
+60226  Guilherme Gomes Franco 18.0
+59152  Guilherme Herman Costa Dias dos Santos -1.0
+60971  Guilherme Joaquim Batista Andrade Abrantes 17.0
+60353  Guilherme Moiteiro Campos 16.0
+60173  Guilherme Nisa Fernandes 15.0
+60288  Guilherme Ribeiro Figueira 16.0
+59472  Gustavo Monteiro da Silva 16.0
+59324  Humberto de Jesus Mendez Perez -1.0
+60198  Iago Miguel Do Nascimento Paulo 18.0
+60062  Jaime António Guarda Russo 15.0
+61177  James Hertz Gomes Furtado 19.0
+56967  Joana Cristina Marques Luís -1.0
+60152  Joana de Oliveira Lopes Tomás 15.0
+60065  Joana Margarida Simões Fernandes 13.0
+60264  Joana Rita Fernandes Botelho Cruz 19.0
+60052  Joana Santos Maroco 16.0
+60225  Joana Wang 17.0
+60127  João Afonso Esteves Ribeiro 13.0
+60131  João Bernardo Guerreiro dos Santos 14.0
+60993  João Candeias Ruivo -1.0
+57121  João Carlos dos Anjos Raposo -1.0
+60802  João Daniel Cristina de Figueiredo Alves -1.0
+59658  João David Santos Crispim -1.0
+56946  João Ferreira de Oliveira Ribeiro Simões -1.0
+60233  João Francisco Serrenho Nini 15.0
+60096  João Gonçalo Freitas Pereira 14.0
+60106  João Henrique Craveiro Lourenço de Mendonça Garcia 13.0
+60183  João Maria Baptista Gonçalves Zarcos 17.0
+52258  João Maria Romão Xavier -1.0
+61052  João Miguel Leal Coimbra de Oliveira 19.0
+60350  João Miguel Lourenço Lima 15.0
+60974  João Pedro Barreto Correia Dantas Pereira 13.0
+61045  João Pedro Branco dos Santos 16.0
+60159  João Pedro Cameirão Valente Serrano -1.0
+60232  João Pedro Costa Gaspar -1.0
+60055  João Pedro Duarte Lopes 13.0
+60180  João Ricardo Botica Pereira 17.0
+58456  Jorge Manuel Pinto de Faria -1.0
+60209  Jorge Neves Fresco 16.0
+59241  José Diogo Teotónio Pinto Romano 13.0
+60196  José Luís Couto Soares -1.0
+59457  José Miguel Perdigão Morgado 14.0
+57888  José Nuno Machado da Cunha 16.0
+50308  José Pedro Bastos Ribeiro Canta -1.0
+60950  Lárcia da Felicidade Cossa -1.0
+54551  Leonardo Manuel Rodrigues da Mãe Ferreira -1.0
+60221  Letícia Catarina Sousa da Silva 17.0
+60204  Liubov Sharkova Mikhailovna 15.0
+55100  Lourenço Ludovice Colaço Catarino -1.0
+60294  Luana Do Paço Gonçalves 14.0
+58402  Luis Gabriel Martins Gomes Almeida Alexandre -1.0
+43612  Luís Maria Soares Rosa -1.0
+60157  Luís Miguel da Torre Abreu 15.0
+60253  Luis Pereira Serrano 14.0
+60684  Mafalda Ferreira Batalha 18.0
+60696  Manuel Maria Moital Rodrigues Martins Gouveia -1.0
+60627  Manuel Mesquita e Carmo Távora Jardim 11.0
+60437  Margarida Silva Palma Pereira Carvalho -1.0
+57164  Maria Inês Gonçalves Rodrigues Carvalho Duarte -1.0
+54596  Mário Rodrigo Afonso Pinheiro -1.0
+55267  Marta Emídio Santos 12.0
+58172  Martin Krastev Magdalinchev 14.0
+57054  Mauro Roge Serrano Filho -1.0
+55980  Melissa de Sousa Couto -1.0
+60373  Miguel Alexandre Guerreiro da Silva -1.0
+60477  Miguel Carapeto Dias Marques Valido 16.0
+60364  Miguel de Sales Pereira da Mata Almeida -1.0
+60431  Miguel Ferraz Domingos 15.0
+60677  Miguel Filipe Cardoso Agostinho 16.0
+60445  Miguel Gonçalves Marques Pereira -1.0
+60428  Miguel José Cardoso Ferreira -1.0
+60517  Miguel Loupa Ferreira 17.0
+59310  Miguel Moura George de Faria Marques 17.0
+60490  Miguel Vieira de Almeida 12.0
+60913  Nasha Bagasse -1.0
+60492  Neel Dinesh Badracim 16.0
+42030  Nelson Jorge Fernandes Martins -1.0
+60483  Nélson Miguel Tilónias Machado Matos 15.0
+60989  Nuno Gonçalo Ferreira Janeiro -1.0
+60593  Nuno Maria Pereira Gonçalves Duarte -1.0
+45970  Nuno Miguel Pedroso Duarte -1.0
+60599  Nuno Monteiro Nogueira 18.0
+60491  Nuro Amer Pequeno 13.0
+60699  Patrícia Nisa Pereira -1.0
+60685  Patrícia Sela Orbe Galrão de Almeida 17.0
+59234  Pedro Acúrcio Domingos 17.0
+60691  Pedro Afonso Fulgêncio Estróia 16.0
+60533  Pedro Alexandre André Catalão -1.0
+57974  Pedro Filipe dos Santos Tavares Cavaleiro 12.0
+59185  Pedro Francisco Silveira Leitão Bento Ribeiro -1.0
+60663  Pedro Guilherme Moreira Arruda 15.0
+59184  Pedro Miguel Barbosa de Castro Charneca Inácio 14.0
+59256  Pedro Miguel Batalha Marques -1.0
+60597  Pedro Miguel Garcias Catarino 15.0
+60386  Pedro Miguel Luis Silva -1.0
+60694  Pedro Miguel Moreira Requiche Alves Fernandes 18.0
+60479  Pedro Nunes Correia Gouveia 18.0
+60590  Pedro Ramos Gasparinho 18.0
+59213  Pedro Rodrigo Xavier Pereira Grilo 15.0
+60618  Rafael Alexandre Moutinho Marinho -1.0
+60608  Rafael Barroso de Medeiros Tavares 16.0
+60487  Rafael Falcão Roma Gomes da Silva 13.0
+60602  Rafael Lopes Martins 17.0
+60700  Rafael Louro Pereira 16.0
+60441  Rafael Martins Santos Costa 14.0
+59243  Rafael Santana Carvalho Mira 17.0
+60665  Renato André da Silva Viola 15.0
+60519  Ricardo Alexandre Pereira Gonçalo 17.0
+56670  Ricardo Alexandre Pereira Mergulhão -1.0
+60485  Ricardo Jorge Matos Bessa 17.0
+60559  Ricardo Manuel da Costa Silva 16.0
+60460  Rita Gomes Lopes 17.0
+61039  Rita Luís Sardinha Bernardo Cabral Barbosa 18.0
+59266  Rodrigo Gonçalo Toito Alberto -1.0
+60619  Rodrigo Jesus Franco Maravilhas 13.0
+60532  Rodrigo Manuel da Costa Grave -1.0
+55042  Rodrigo Miguel Nunes Cordeiro -1.0
+51721  Rodrigo Velez da Silva -1.0
+59614  Roodabeh Samadi -1.0
+61389  Rui David Dias Cunha -1.0
+60390  Rui Jorge Rodrigues Correia 17.0
+57046  Rui Miguel Costa Machado Capareira -1.0
+60768  Salvador Maria Jorge de Carvalho Norton de Matos -1.0
+60718  Samuel Costa Fernão Pires 13.0
+60822  Samuel Loia Henriques -1.0
+61218  Sarifa Ibraimo Muzamilo -1.0
+60852  Sebastião Carmona Antunes -1.0
+60840  Sebastião Costa Jerónimo -1.0
+60766  Sofia Claro Monteiro 15.0
+60756  Teresa Maria Valente Ribeiro 12.0
+60785  Tiago Bandeira Amaral Gonçalves 15.0
+59357  Tiago de Abreu Baptista -1.0
+60784  Tiago Gonçalo Bandos Rodrigues 15.0
+58125  Tiago Jorge da Silva Duarte 12.0
+60860  Tiago Marques Gonçalves -1.0
+60720  Tiago Ribeiro Crispim -1.0
+60749  Tiago Rodrigues Francisco 13.0
+60811  Tiago Silva Meirim 12.0
+60747  Tomás Afonso Lopes Mondim 14.0
+60722  Tomás Filipe Pina Gabriel 18.0
+60741  Tomás Manuel Cardoso Gonçalves 17.0
+60728  Tomás Patricio Oliveira Martins 11.0
+60734  Tomás Quadros da Silveira 14.0
+60719  Tomé Duarte Filipe Branco Antunes Dias 16.0
+60814  Vasco Fernandes Fonseca 15.0
+60863  Vasco Manuel Marques da Silva de Oliveira Nunes -1.0
+58592  Vasco Manuel Rosa Malta -1.0
+60793  Vasco Rodrigues Bastos Brito Candeias -1.0
+60795  Vasco Soares Mesquita Ferreira Nunes 15.0
+60790  Vicente Lamerton Viegas Leitão Piló -1.0
+54647  Vinícius Castello Branco -1.0
+60924  Viviane Camila Casimiro Carvalho -1.0
+60735  Vladyslav Mikytiv 18.0
+60739  Yaroslav Hayduk -1.0
+58897  Zaman Tareq Jawad -1.0

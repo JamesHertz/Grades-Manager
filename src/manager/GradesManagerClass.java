@@ -31,8 +31,9 @@ public class GradesManagerClass implements GradesManager, Serializable {
     // I gonna key you out dude :>
     private final Map<String, EvalSheet> evaluations;// this is quite a very interesting thing
     private final SortedSet<Student> studentsByAlphOrder;
-    private final List<EvalSheet> evalSheet;
-    private final SheetHelper helper;
+    private final List<EvalSheet> evalSheet; // still thinking about this
+    private final SheetHelper bufHelper;
+    private int newStudents;
     //private final List<Student> statistic;
 
     public GradesManagerClass(){
@@ -41,8 +42,37 @@ public class GradesManagerClass implements GradesManager, Serializable {
         evaluations = new HashMap<>(DEFAULT_SIZE);
         studentsByAlphOrder = new TreeSet<>(new StudentByAlphOrder());
         evalSheet = new ArrayList<>(DEFAULT_SIZE);
-        helper = new SheetHelperClass();
+        bufHelper = new SheetHelperClass();
+        newStudents = 0;
         //statistic = new ArrayList<>();
+    }
+
+
+    @Override
+    public int commitBufHelper(String subjectId, String evalId) throws EmptyBufHelperException, EvaluationAlreadyExistsException {
+        if(bufHelper.isEmpty())
+            throw new EmptyBufHelperException();
+        Subject sub = getSubject(subjectId);
+        sub.addEvaluation(evalId, bufHelper);
+        return newStudents;
+    }
+
+    @Override
+    public void clearBufHelper() {
+        newStudents = 0;
+        bufHelper.clear();
+    }
+
+    @Override
+    public void addEvalEntry(int studentNumber, String name, float eval) throws AlreadyEvaluatedException {
+       Student st = getStudent(studentNumber, name); // still I'm gonna think about it :D
+       bufHelper.addEvalHelper(st, eval);
+    }
+
+    @Override
+    public void addEvalEntry(int studentNumber, float eval) throws StudentDoesNotExistException, AlreadyEvaluatedException {
+        Student st = findStudent(studentNumber);
+        bufHelper.addEvalHelper(st, eval);
     }
 
     @Override
@@ -84,8 +114,16 @@ public class GradesManagerClass implements GradesManager, Serializable {
             student = new StudentClass(number, name);
             students.put(number, student);
             studentsByAlphOrder.add(student);
+            newStudents++;
             //statistic.add(student);
         }
+        return student;
+    }
+
+    private Student findStudent(int number) throws StudentDoesNotExistException {
+        Student student = students.get(number);
+        if(student == null)
+            throw new StudentDoesNotExistException(number);
         return student;
     }
 

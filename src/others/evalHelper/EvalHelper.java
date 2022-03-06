@@ -2,7 +2,9 @@ package others.evalHelper;
 
 import subject.Student;
 
-public interface EvalHelper {
+import java.io.Serializable;
+
+public interface EvalHelper extends Serializable {
    // remove
     String name();
     // remove

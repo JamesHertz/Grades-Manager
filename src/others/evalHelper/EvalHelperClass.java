@@ -4,7 +4,7 @@ import subject.Student;
 
 import java.io.Serializable;
 
-public class EvalHelperClass implements EvalHelper, Serializable {
+public class EvalHelperClass implements EvalHelper{
 
     private static final long serialVersionUID = -3364902666218938897L;
     private String name;

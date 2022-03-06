@@ -16,11 +16,13 @@ public interface GradesManager {
     
     // changes:
     // BufHelper
-    // clearBufHelper()
-    // addEvalEntry(int studentNumber, String name, float eval) // probably not gonna use this one
-    // addEvalEntry(int studentNumber, float eval)
+    void clearBufHelper();
+    // adds EvalEntry if the student doesn't exist on the system it creates a new one
+    void addEvalEntry(int studentNumber, String name, float eval) throws AlreadyEvaluatedException; // probably not gonna use this one
+    void addEvalEntry(int studentNumber, float eval) throws StudentDoesNotExistException, AlreadyEvaluatedException;
     // addEvalEntry(List<....> eval)
-    // commitBufHelper(String subjectId, String evalId)
+    // returns the number of new Student created
+    int commitBufHelper(String subjectId, String evalId) throws EmptyBufHelperException, EvaluationAlreadyExistsException;
     // is it really necessary??
     String createEvaluationSheet(String subject, String evalId) throws EvaluationAlreadyExistsException;
     void evaluate(String evalId, int studentNumber, String studentName, float grade) throws  EvalSheetDoesNotExistException, AlreadyEvaluatedException;

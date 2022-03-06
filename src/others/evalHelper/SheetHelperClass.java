@@ -6,11 +6,13 @@ import subject.exceptions.AlreadyEvaluatedException;
 import java.io.Serializable;
 import java.util.*;
 
-public class SheetHelperClass implements SheetHelper, Serializable {
+public class SheetHelperClass implements SheetHelper{
 
     private static final long serialVersionUID = 0L;
+    // delete three fields below
     private static final String DEFAULT_VALUE = "DEFAULT VALUE";
     private final String subject, evalId;
+    // end delete
     private final SortedMap<Integer, EvalHelper> evalHelpers; // think about it later
     public SheetHelperClass(String subject, String evalId){
         this.subject = subject;
@@ -33,8 +35,14 @@ public class SheetHelperClass implements SheetHelper, Serializable {
 
 
     @Override
+    public boolean isEmpty() {
+        return evalHelpers.isEmpty();
+    }
+
+    @Override
     public void clear() {
-       evalHelpers.clear();
+        if(!evalHelpers.isEmpty())
+            evalHelpers.clear();
     }
 
     @Override

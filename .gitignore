@@ -1,6 +1,9 @@
 # Project exclude paths
 /out/
 /.idea/
+/files/
+/object/
 *.iml
 src/META-INF/
-str/META-INF/*
+META-INF
+Manager.obj

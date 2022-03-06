@@ -11,11 +11,9 @@ import java.util.Iterator;
 
 public interface Subject {
     String id();
-    EvalSheet createEvaluations(String evalId) throws EvaluationAlreadyExistsException;
     EvalSheet addEvaluation(String evalId, SheetHelper helper) throws EvaluationAlreadyExistsException;
     EvalSheet getEvalSheet(String evalId) throws EvaluationDoesNotExit;
     int numberOfEvalSheet();
-    void addData(float grade);
     Statistic statistic();
     Iterator<EvalSheet> listEvaluations();
 }

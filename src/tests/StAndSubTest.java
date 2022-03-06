@@ -1,4 +1,7 @@
 package tests;
+import manager.GradesManager;
+import manager.GradesManagerClass;
+import manager.exceptions.StudentDoesNotExistException;
 import org.junit.Before;
 import org.junit.Test;
 import others.evalHelper.EvalHelper;
@@ -24,7 +27,7 @@ public class StAndSubTest {
     // that's it
     @Before
     public void setUP(){
-        tmp = new SheetHelperClass("Math", "Test 1");
+        tmp = new SheetHelperClass();
         st = new LinkedList<>();
         String[] names = new String[]{"James", "Hertz","John", "Peter", "Richard", "Michael"};
         int number = 61177;
@@ -59,21 +62,20 @@ public class StAndSubTest {
             try{
                 tmp.addEvalHelper(aux, 0f);
             }catch (Exception e){
-
+                fail();
             }
         }
         it = st.iterator();
 
-        boolean in = false;
         while(it.hasNext()){
             Student aux = it.next();
             try{
                 tmp.addEvalHelper(aux, 0f);
             }catch (AlreadyEvaluatedException e){
-               in = true;
+                continue;
             }
-            assertTrue(in);
-            in = false;
+            fail();
+
         }
     }
 
@@ -85,7 +87,7 @@ public class StAndSubTest {
         test01();
        // test Subject
         assertEquals(sub.numberOfEvalSheet(), 0);
-        String evalId = tmp.evalId();
+        String evalId = "test01";
         try{
             // think about tmp.evalId();
            sub.addEvaluation(evalId, tmp);
@@ -110,7 +112,7 @@ public class StAndSubTest {
         int rand = 10 + Math.abs(new Random().nextInt(100));
         for(int i = 0; i < rand; i ++){
             try {
-                sub.addEvaluation("" + i, new SheetHelperClass("other", "another"));
+                sub.addEvaluation("" + i, new SheetHelperClass());
             }catch(Exception e){
                 fail();
             }
@@ -146,5 +148,142 @@ public class StAndSubTest {
             fail();
         }
 
+    }
+
+    @Test
+    public void test06(){
+        // a list with all students
+        var manager = new GradesManagerClass();
+        Iterator<Student> it = st.iterator();
+        var rand = new Random();
+
+        // test if addEvalEntry(int, float) is working well
+        while(it.hasNext()){
+            var tmp = it.next();
+            try {
+               manager.addEvalEntry(tmp.number(), rand.nextFloat());
+            }catch(StudentDoesNotExistException e){
+                continue;
+            }catch(Exception e){
+                fail();
+            }
+            fail();
+        }
+
+        it = st.iterator();
+
+        // test if addEvalEntry(int, String, float) is working well
+        while(it.hasNext()){
+            var tmp = it.next();
+            try {
+                manager.addEvalEntry(tmp.number(), tmp.name(), rand.nextFloat());
+            }catch(Exception e){
+                fail();
+            }
+        }
+
+        // testes AlreadyEvaluatedException
+        it = st.iterator();
+        while(it.hasNext()){
+            var tmp = it.next();
+            try {
+                manager.addEvalEntry(tmp.number(), tmp.name(), rand.nextFloat());
+            }catch(AlreadyEvaluatedException e){
+                continue;
+            }catch(Exception e){
+                fail();
+            }
+            fail();
+        }
+
+        // testes AlreadyEvaluatedException
+        it = st.iterator();
+        while(it.hasNext()){
+            var tmp = it.next();
+            try {
+                manager.addEvalEntry(tmp.number(), rand.nextFloat());
+            }catch(AlreadyEvaluatedException e){
+                continue;
+            }catch(Exception e){
+                fail();
+            }
+            fail();
+        }
+
+        // clear the buffer
+        manager.clearBufHelper();
+        it = st.iterator();
+
+        // adds every one back to the buffer
+        while(it.hasNext()){
+            var tmp = it.next();
+            try {
+                manager.addEvalEntry(tmp.number(), rand.nextFloat());
+            }catch(Exception e){
+                fail();
+            }
+        }
+
+        it = st.iterator();
+        Iterator<EvalHelper> it2 = manager.listBufHelper();
+
+        // verifies if our buffer is consistent
+        while(it.hasNext() && it2.hasNext()){
+            var stList = it.next();
+            var buf = it2.next().getStudent();
+
+            //System.out.printf("stList: %d \t buf: %d\n", stList.number(), buf.number());
+            assertEquals(stList.number(), buf.number());
+        }
+        assertEquals(it.hasNext(), it2.hasNext());
+
+    }
+
+
+    @Test
+    public void test07(){
+        // tests the commitBufHelper method
+        GradesManager manager = new GradesManagerClass();
+        fill(manager);
+
+        try{
+            int commits = manager.commitBufHelper("MATH", "test 1");
+            assertEquals(commits, st.size());
+        }catch(Exception e){
+            fail();
+        }
+
+        fill(manager);
+        try{
+            int commits = manager.commitBufHelper("MATH", "test 2");
+            assertEquals(commits, 0);
+        }catch(Exception e){
+            fail();
+        }
+
+        fill(manager);
+        try{
+            manager.commitBufHelper("MATH", "test 2");
+        }catch(EvaluationAlreadyExistsException e) {
+            return;
+        } catch(Exception e){
+            fail();
+        }
+        fail();
+    }
+
+    private void fill(GradesManager manager){
+        var rand = new Random();
+        var it = st.iterator();
+
+        // adds students to manager
+        while(it.hasNext()){
+            var student = it.next();
+            try{
+                manager.addEvalEntry(student.number(), student.name(), rand.nextFloat());
+            }catch(Exception e){
+                fail();
+            }
+        }
     }
 }

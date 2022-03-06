@@ -1,5 +1,7 @@
 package others.evalHelper;
 
+import others.Statistic;
+import others.StatisticClass;
 import subject.Student;
 import subject.exceptions.AlreadyEvaluatedException;
 
@@ -9,30 +11,12 @@ import java.util.*;
 public class SheetHelperClass implements SheetHelper{
 
     private static final long serialVersionUID = 0L;
-    // delete three fields below
-    private static final String DEFAULT_VALUE = "DEFAULT VALUE";
-    private final String subject, evalId;
-    // end delete
     private final SortedMap<Integer, EvalHelper> evalHelpers; // think about it later
-    public SheetHelperClass(String subject, String evalId){
-        this.subject = subject;
-        this.evalId = evalId;
-        evalHelpers = new TreeMap<>();
-    }
+
 
     public SheetHelperClass(){
-        this(DEFAULT_VALUE, DEFAULT_VALUE);
+        evalHelpers = new TreeMap<>();
     }
-    @Override
-    public String subject() {
-        return subject;
-    }
-
-    @Override
-    public String evalId() {
-        return evalId;
-    }
-
 
     @Override
     public boolean isEmpty() {
@@ -56,13 +40,6 @@ public class SheetHelperClass implements SheetHelper{
     @Override
     public int size() {
         return evalHelpers.size();
-    }
-
-    @Override
-    public void addEvalHelper(String name, int number, float grade) throws AlreadyEvaluatedException {
-        if(evalHelpers.containsKey(number))
-            throw new AlreadyEvaluatedException(number);
-        evalHelpers.put(number, new EvalHelperClass(name, number, grade));
     }
 
     @Override

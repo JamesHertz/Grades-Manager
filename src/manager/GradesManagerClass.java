@@ -23,6 +23,9 @@ public class GradesManagerClass implements GradesManager, Serializable {
             -> test it
      */
 
+    public static final String REPLACEMENT = "-"; // think about this later
+    private static final String DEFAULT_ID = "%s-%s", SPACE = " ", REGEX = "\\s{2,}";
+
     private static final int DEFAULT_SIZE = 25;
     private static final int STUDENTS_DEFAULT_SIZE = 200; // think about this
     private static final long serialVersionUID = 0L;
@@ -53,14 +56,31 @@ public class GradesManagerClass implements GradesManager, Serializable {
         if(bufHelper.isEmpty())
             throw new EmptyBufHelperException();
         Subject sub = getSubject(subjectId);
-        sub.addEvaluation(evalId, bufHelper);
-        return newStudents;
+        String realEvalId = formatId(subjectId, evalId);
+
+        if(evaluations.containsKey(realEvalId))
+            throw new EvaluationAlreadyExistsException(subjectId, evalId);
+
+        // updates internal dataStructures
+        EvalSheet aux = sub.addEvaluation(realEvalId, bufHelper);
+        evaluations.put(realEvalId, aux);
+        evalSheet.add(aux);
+
+        // how many new students were create :)
+        int tmp = newStudents;
+        clearBufHelper();
+        return tmp;
     }
 
     @Override
     public void clearBufHelper() {
         newStudents = 0;
         bufHelper.clear();
+    }
+
+    @Override
+    public Iterator<EvalHelper> listBufHelper() {
+        return bufHelper.listAllHelper();
     }
 
     @Override
@@ -75,38 +95,6 @@ public class GradesManagerClass implements GradesManager, Serializable {
         bufHelper.addEvalHelper(st, eval);
     }
 
-    @Override
-    public String createEvaluationSheet(String subjectId, String evalId) throws EvaluationAlreadyExistsException {
-        Subject subject = getSubject(subjectId);
-        EvalSheet eval = subject.createEvaluations(evalId);
-        String id = eval.evaluationId();
-        evaluations.put(id, eval);
-        evalSheet.add(eval);
-        return id;
-    }
-
-
-    @Override
-    public void evaluate(String evalId, int studentNumber, String studentName, float grade) throws  EvalSheetDoesNotExistException, AlreadyEvaluatedException{
-        EvalSheet eval = evaluations.get(evalId);
-        if(eval == null)
-            throw new EvalSheetDoesNotExistException(evalId);
-        Student student = getStudent(studentNumber, studentName);
-        eval.evaluate(student, grade);
-    }
-
-    @Override
-    public void addSheetHelper(SheetHelper sheet) throws EvaluationAlreadyExistsException, AlreadyEvaluatedException, InvalidSheetException {
-        if(sheet == null)
-            throw new InvalidSheetException();
-        String evalId = createEvaluationSheet(sheet.subject(), sheet.evalId());
-        EvalSheet eval = evaluations.get(evalId);
-        Iterator<EvalHelper> it = sheet.listAllHelper();
-        while (it.hasNext()) {
-            EvalHelper tmp = it.next();
-            eval.evaluate(getStudent(tmp.number(), tmp.name()), tmp.getGrade());
-        }
-    }
 
     private Student getStudent(int number, String name){
         Student student = students.get(number);
@@ -196,5 +184,10 @@ public class GradesManagerClass implements GradesManager, Serializable {
         if(eval == null)
             throw new EvalSheetDoesNotExistException(evalId);
         return eval;
+    }
+
+    private String formatId(String subjectId, String evalId){
+        String realId = evalId.replaceAll(REGEX, SPACE).trim(); // search for it later
+        return String.format(DEFAULT_ID, subjectId, realId.replace(SPACE, REPLACEMENT));
     }
 }

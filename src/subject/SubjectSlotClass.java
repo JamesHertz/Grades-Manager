@@ -36,6 +36,7 @@ public class SubjectSlotClass implements SubjectSlot, Serializable{
     public void addEvaluations(EvalEntry eval) {
         evaluations.add(eval);
         statistic.addData(eval.grade());
+        student.incNEval();// just being nice <<:)
     }
 
     @Override

@@ -28,7 +28,12 @@ public class StudentClass implements Student, Serializable {
 
     @Override
     public void addSlot(SubjectSlot slot) {
-       evaluationsBySubject.put(slot.subjectId(), slot);
+        evaluationsBySubject.put(slot.subjectId(), slot);
+    }
+
+    @Override
+    public void incNEval() {
+        nEval++;
     }
 
     // will not happen anymore

@@ -4,6 +4,7 @@ import others.Statistic;
 import others.StatisticClass;
 import others.evalHelper.EvalHelper;
 import others.evalHelper.SheetHelper;
+import subject.evaluations.EvalEntry;
 import subject.evaluations.EvalSheet;
 import subject.evaluations.EvalEntryClass;
 import subject.evaluations.EvaluationSheet;
@@ -15,7 +16,6 @@ import java.util.*;
 
 public class SubjectClass implements Subject, Serializable {
 
-    private static final String DEFAULT_ID = "%s-%s", SPACE = " ", REPLACEMENT = "-", REGEX = "\\s{2,}";
     private static final long serialVersionUID = 0L;
     private final List<EvalSheet> evaluations;
    // private final Map<String, EvalSheet> allEvaluations;
@@ -33,15 +33,6 @@ public class SubjectClass implements Subject, Serializable {
    //     allEvaluations = new Hashtable<>();
     }
 
-    @Override
-    public EvalSheet createEvaluations(String evalId) throws EvaluationAlreadyExistsException {
-        String realId = formatId(evalId);
-        if(!evalIds.add(realId))
-            throw new EvaluationAlreadyExistsException(id, evalId);
-        EvalSheet evaluation = new EvaluationSheet(realId, this);
-        evaluations.add(evaluation);
-        return evaluation;
-    }
 
     // future plan
     public void evaluate(Student student, float grade){
@@ -51,15 +42,14 @@ public class SubjectClass implements Subject, Serializable {
 
     @Override
     public EvalSheet addEvaluation(String evalId, SheetHelper helper) throws EvaluationAlreadyExistsException {
-        String realId = formatId(evalId);
-        //if(allEvaluations.containsKey(realId))
+        //if(allEvaluations.containsKey(evalId))
         // if the evaluation exists
-         if(findEval(realId) != null)
+         if(findEval(evalId) != null) // think about this later :)
             throw new EvaluationAlreadyExistsException(id, evalId);
 
         // think about the possibility of it be very fast
-        EvalSheet eval = new EvaluationSheet(realId, this);
-        // allEvaluations.put(realId, eval);
+        EvalSheet eval = new EvaluationSheet(evalId, this);
+        // allEvaluations.put(evalId, eval);
         evaluations.add(eval);
 
         // for each evaluation:
@@ -68,7 +58,7 @@ public class SubjectClass implements Subject, Serializable {
         while(it.hasNext()){
            EvalHelper tmp = it.next();
            Student st = tmp.getStudent();
-           SubjectSlot slot = allStudents.get(tmp.number());
+           SubjectSlot slot = allStudents.get(st.number());
            if(slot == null){
                    slot = new SubjectSlotClass(st, this);
                    allStudents.put(tmp.number(), slot);
@@ -76,14 +66,16 @@ public class SubjectClass implements Subject, Serializable {
            }
             // a lot to think yet :D
             // in some how get the student
-            slot.addEvaluations(new EvalEntryClass(eval, st, tmp.getGrade()));
+            EvalEntry entry =  new EvalEntryClass(eval, st, tmp.getGrade());
+            slot.addEvaluations(entry);
+            eval.evaluate(st, tmp.getGrade());
         }
         return eval;
     }
 
     private EvalSheet findEval(String evalId){
         Iterator<EvalSheet> it = evaluations.iterator();
-        while(it.hasNext()){
+        while(it.hasNext()){ // xiuu intellij
             EvalSheet tmp = it.next();
             if(tmp.evaluationId().equals(evalId))
                 return tmp;
@@ -114,18 +106,10 @@ public class SubjectClass implements Subject, Serializable {
         return evaluations.size();
     }
 
-    @Override
-    public void addData(float grade) {
-        statistic.addData(grade);
-    }
 
     @Override
     public Statistic statistic() {
         return statistic;
     }
 
-    private String formatId(String evalId){
-        String realId = evalId.replaceAll(REGEX, SPACE).trim(); // search for it later
-        return String.format(DEFAULT_ID, id, realId.replace(SPACE, REPLACEMENT));
-    }
 }

@@ -1,6 +1,7 @@
 package manager;
 
 import manager.exceptions.*;
+import others.evalHelper.EvalHelper;
 import others.evalHelper.SheetHelper;
 import subject.Subject;
 import subject.SubjectSlot;
@@ -22,11 +23,9 @@ public interface GradesManager {
     void addEvalEntry(int studentNumber, float eval) throws StudentDoesNotExistException, AlreadyEvaluatedException;
     // addEvalEntry(List<....> eval)
     // returns the number of new Student created
+    // returns some metadata ....
     int commitBufHelper(String subjectId, String evalId) throws EmptyBufHelperException, EvaluationAlreadyExistsException;
     // is it really necessary??
-    String createEvaluationSheet(String subject, String evalId) throws EvaluationAlreadyExistsException;
-    void evaluate(String evalId, int studentNumber, String studentName, float grade) throws  EvalSheetDoesNotExistException, AlreadyEvaluatedException;
-    void addSheetHelper(SheetHelper sheet) throws EvaluationAlreadyExistsException, AlreadyEvaluatedException, InvalidSheetException, AlreadyEvaluatedException;
 
     // interesting I will think about this
     SubjectSlot studentSubjectSlot(int studentNumber, String subjectId) throws StudentDoesNotExistException, SubjectDoesNotExistException, NoSuchSubjectInStudentException, NoAddedStudentException;
@@ -39,4 +38,5 @@ public interface GradesManager {
     Iterator<Student> listAllStudents();
     //Iterator<Student> statistic();
     Iterator<Subject> listAllSubjects();
+    Iterator<EvalHelper> listBufHelper();
 }

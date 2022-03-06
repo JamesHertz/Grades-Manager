@@ -11,6 +11,9 @@ public interface Student extends Comparable<Student> {
     String name();
     int numberOfEvaluation();
     float averageGrade(); // target ...
+
+    // interfaces :>
+    void incNEval();
     void addEvaluation(EvalEntry eval);
     void addSlot(SubjectSlot slot);
     Statistic statistic();

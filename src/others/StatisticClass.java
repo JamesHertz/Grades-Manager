@@ -71,6 +71,7 @@ public class StatisticClass implements Statistic, Serializable {
         return (int) none;
     }
 
+
     private float getPercentage(float number){
         return number * PERCENT;
     }

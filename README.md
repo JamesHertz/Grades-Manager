@@ -3,7 +3,7 @@ A way to check up on the big brain in your class
 
 ## Changes:
 <ol>
-    <li>Refactor code</li>
+    <li>Refactor code <input type="checkbox" value="true" checked></li>
     <ul>
         <li>Optimize what you did </li>
         <li>Rethink about data structures</li>

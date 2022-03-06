@@ -14,8 +14,7 @@ public class EvaluationSheet implements EvalSheet, Serializable {
 
     private static final String DEFAULT_DESCRIPTION = "None!!";
     private static final long serialVersionUID = 0L;
-    private final SortedMap<Float, EvalEntry> ranking;
-    private final SortedMap<String, EvalEntry> byAlphabeticalOrder;
+    private final SortedSet<EvalEntry> ranking, byAlphabeticalOrder;
     private final SortedSet<Student> students;
     private final Statistic statistic;
     private final String id;
@@ -31,17 +30,19 @@ public class EvaluationSheet implements EvalSheet, Serializable {
         this.id = id;
         this.subject = subject;
         this.description = description;
-        ranking = new TreeMap<>(); // problems later...
-        byAlphabeticalOrder = new TreeMap<>(new StringComp());
+        ranking = new TreeSet<>(); // problems later...
+        byAlphabeticalOrder = new TreeSet<>(new EvalEntryComp());
         students = new TreeSet<>();
         statistic = new StatisticClass();
         closed = false;
     }
 
+
+
     @Override
-    public void evaluate(Student student, float grade) throws AlreadyEvaluatedException {
-        if(!students.add(student))
-            throw new AlreadyEvaluatedException(student.number());
+    public void evaluate(Student student, float grade) {
+        // think about this later ?:
+        students.add(student);
         EvalEntry eval = new EvalEntryClass(this, student, grade);
         student.addEvaluation(eval);
         statistic.addData(grade);
@@ -49,9 +50,8 @@ public class EvaluationSheet implements EvalSheet, Serializable {
     }
 
     private void addEvaluation(EvalEntry eval){
-        ranking.put(eval.grade(), eval);
-        byAlphabeticalOrder.put(eval.student().name(), eval);
-        subject.addData(eval.grade());
+        ranking.add(eval);
+        byAlphabeticalOrder.add(eval);
     }
 
     @Override
@@ -76,13 +76,13 @@ public class EvaluationSheet implements EvalSheet, Serializable {
 
     @Override
     public Iterator<EvalEntry> listByAlphabeticalOrder() {
-        return byAlphabeticalOrder.values().iterator();
+        return byAlphabeticalOrder.iterator();
     }
 
 
     @Override
     public Iterator<EvalEntry> ranking() {
-        return ranking.values().iterator();
+        return ranking.iterator();
     }
 
     @Override

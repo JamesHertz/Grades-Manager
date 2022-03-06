@@ -9,6 +9,8 @@ import others.evalHelper.SheetHelperClass;
 import subject.*;
 import subject.evaluations.EvalEntry;
 import subject.evaluations.EvalSheet;
+import subject.exceptions.AlreadyEvaluatedException;
+import subject.exceptions.EvaluationAlreadyExistsException;
 import subject.exceptions.NoSuchSubjectInStudentException;
 
 import java.io.*;
@@ -19,6 +21,7 @@ public class Main {
 
     //Fist Message
     private static final String INIT = "By ©James Hertz\nWelcome to Grades Manager\n";
+    private static final String DEFAULT_UPLOAD_FILE_NAME= "James.txt";
 
     //Messages
     private static final String UNKNOWN_MESSAGE = "Unknown Command. Type '%s' to see all commands\n";
@@ -59,7 +62,7 @@ public class Main {
     private static final String PROMPT = "\n>>> ";
     private static final String JAMES = "Your fault James";
     private static final String SEPARATOR = "\t", PATH = "./files/%s", PATH_O = "./object/%s";
-    private static final String UPLOAD_MESSAGE = "%d uploaded from %s\n";
+    private static final String UPLOAD_MESSAGE = "%03d uploaded from %s. New students %d\n";
     private static final String GET_LINE_FORMATTER = "%s %s";
     private static final String INVALID_GRADE = "X", GRADE_FORMATTER = "%.1f";
     private static final String MANAGER = "Manager.obj";
@@ -184,6 +187,8 @@ public class Main {
         try {
             int number = Integer.parseInt(in.nextLine().trim());
             Student student = manager.student(number);
+            if(number == 61177)
+            System.out.println(student);
             System.out.printf(STUDENT_HEAD_MESSAGE, student.number(), student.name());
             System.out.println(STUDENT_SUB_HEAD_MESSAGE);
             Iterator<SubjectSlot> it = student.listSubSlot();
@@ -281,35 +286,42 @@ public class Main {
 
     //------------------------------------------------------------------------------------
     private static void trickyThing(Scanner in, GradesManager manager) {
-        // just don't complain intellij
-        final String fileName = "James.txt";//in.nextLine();
+        String fileName = in.nextLine();
+        if(fileName.equals("")){
+            fileName = DEFAULT_UPLOAD_FILE_NAME;// "James.txt";//in.nextLine();
+        }
         try {
             Scanner input = new Scanner(new FileReader(fileName));
             while (input.hasNextLine()) {
                 myStuff(input.nextLine().split(SEPARATOR), manager);
             }
 
-        }catch (Exception e) {
-            System.out.println(JAMES);
-            e.printStackTrace();
-        //    System.exit(-1);
+        }catch(AlreadyEvaluatedException | EvaluationAlreadyExistsException e){
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.printf("Problems reading the file: %s.\nError", e.getMessage());
+
         }
     }
 
-    private static void myStuff(String[] names, GradesManager manager) throws Exception {
-        SheetHelper sheet = new SheetHelperClass(names[SUBJECT_ID], names[EVAL_ID]);
-
-        Scanner input = new Scanner(new FileReader(String.format(PATH,names[FILE_NAME])));
-        while (input.hasNextLine()) {
-            int number = input.nextInt();
-            String name = getLine(input);
-            float grade = input.nextFloat();
-            sheet.addEvalHelper(name, number, grade);
+    private static void myStuff(String[] names, GradesManager manager) throws IOException, AlreadyEvaluatedException, EmptyBufHelperException, EvaluationAlreadyExistsException {
+        int newEval = 0, newSt;
+        try {
+            Scanner input = new Scanner(new FileReader(String.format(PATH, names[FILE_NAME])));
+            while (input.hasNextLine()) {
+                int number = input.nextInt();
+                String name = getLine(input);
+                float grade = input.nextFloat();
+                manager.addEvalEntry(number, name, grade);
+                newEval++;
+            }
+            input.close();
+        }catch(IOException e){
+            throw new IOException(names[FILE_NAME]);
         }
-        manager.addSheetHelper(sheet);
-        System.out.printf(UPLOAD_MESSAGE, sheet.size(), sheet.subject());
-        input.close();
+        newSt = manager.commitBufHelper(names[SUBJECT_ID], names[EVAL_ID]);
 
+        System.out.printf(UPLOAD_MESSAGE, newEval, names[SUBJECT_ID], newSt);
     }
 
     private static String getLine(Scanner in) {

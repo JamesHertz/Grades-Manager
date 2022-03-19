@@ -16,7 +16,7 @@ public interface EvalSheet {
     boolean isClosed();// never used think about this
     void close(); // think about this
     // think about this later :>
-    void evaluate(Student student, float grade); //throws AlreadyEvaluatedException;
+    void evaluate(Student student, EvalEntry eval); //throws AlreadyEvaluatedException;
 
     Iterator<EvalEntry> listByAlphabeticalOrder();
 

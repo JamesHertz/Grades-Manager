@@ -296,7 +296,7 @@ public class Main {
                 myStuff(input.nextLine().split(SEPARATOR), manager);
             }
 
-        }catch(AlreadyEvaluatedException | EvaluationAlreadyExistsException e){
+        }catch(AlreadyEvaluatedException | EvaluationAlreadyExistsException | SubjectDoesNotExistException e){
             System.out.println(e.getMessage());
         } catch (IOException e) {
             System.out.printf("Problems reading the file: %s.\nError", e.getMessage());
@@ -304,7 +304,7 @@ public class Main {
         }
     }
 
-    private static void myStuff(String[] names, GradesManager manager) throws IOException, AlreadyEvaluatedException, EmptyBufHelperException, EvaluationAlreadyExistsException {
+    private static void myStuff(String[] names, GradesManager manager) throws IOException, AlreadyEvaluatedException, EmptyBufHelperException, EvaluationAlreadyExistsException, SubjectDoesNotExistException {
         int newEval = 0, newSt;
         try {
             Scanner input = new Scanner(new FileReader(String.format(PATH, names[FILE_NAME])));

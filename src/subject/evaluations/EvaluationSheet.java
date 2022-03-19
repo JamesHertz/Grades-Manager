@@ -40,12 +40,12 @@ public class EvaluationSheet implements EvalSheet, Serializable {
 
 
     @Override
-    public void evaluate(Student student, float grade) {
+    public void evaluate(Student student, EvalEntry eval) {
         // think about this later ?:
         students.add(student);
-        EvalEntry eval = new EvalEntryClass(this, student, grade);
+        //EvalEntry eval = new EvalEntryClass(this, student, grade);
         student.addEvaluation(eval);
-        statistic.addData(grade);
+        statistic.addData(eval.grade());
         addEvaluation(eval);
     }
 

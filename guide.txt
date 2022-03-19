@@ -1,7 +1,15 @@
 TODO:
-    -> Refactor code [doing so]
-    -> Start supporting etcs and being able to calculate the average grade
+    X Refactor code [doing so]
+    -> Solve problems interfaces :)
+    -> Start supporting etcs and being able to calculate the average grade {
+    final idea evaluation: evaluation have part of counts for part of the final grade
+    also have composite evaluation which can have one or more sub-evaluation
+     }
     // what about numbers to choose what is gonna be the final grade ??
     -> Define a way of specifying th formula 
     -> Get all grades
     -> Comment the whole code
+By now:
+        -> Get a list of the average grade for everyone
+        -> Change something in the code
+        -> Get all final grade [only]

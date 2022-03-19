@@ -7,7 +7,6 @@ import others.evalHelper.SheetHelper;
 import others.evalHelper.SheetHelperClass;
 import subject.*;
 import subject.evaluations.EvalSheet;
-import subject.evaluations.EvaluationSheet;
 import subject.exceptions.AlreadyEvaluatedException;
 import subject.exceptions.EvaluationAlreadyExistsException;
 import subject.exceptions.NoSuchSubjectInStudentException;
@@ -52,10 +51,10 @@ public class GradesManagerClass implements GradesManager, Serializable {
 
 
     @Override
-    public int commitBufHelper(String subjectId, String evalId) throws EmptyBufHelperException, EvaluationAlreadyExistsException {
+    public int commitBufHelper(String subjectId, String evalId) throws EmptyBufHelperException, EvaluationAlreadyExistsException, SubjectDoesNotExistException {
         if(bufHelper.isEmpty())
             throw new EmptyBufHelperException();
-        Subject sub = getSubject(subjectId);
+        Subject sub = findSubject(subjectId);
         String realEvalId = formatId(subjectId, evalId);
 
         if(evaluations.containsKey(realEvalId))
@@ -70,6 +69,15 @@ public class GradesManagerClass implements GradesManager, Serializable {
         int tmp = newStudents;
         clearBufHelper();
         return tmp;
+    }
+
+    @Override
+    public Subject createSubject(String subId, int ects) throws SubjectDoesNotExistException {
+        if(subjects.containsKey(subId))
+            throw new SubjectDoesNotExistException(subId);
+        Subject sub = new SubjectClass(subId, ects);
+        subjects.put(subId,sub);
+        return sub;
     }
 
     @Override
@@ -115,11 +123,10 @@ public class GradesManagerClass implements GradesManager, Serializable {
         return student;
     }
 
-    private Subject getSubject(String subjectId){
+    private Subject findSubject(String subjectId) throws SubjectDoesNotExistException {
         Subject subject = subjects.get(subjectId);
         if(subject == null){
-            subject = new SubjectClass(subjectId);
-            subjects.put(subjectId, subject);
+          throw new SubjectDoesNotExistException(subjectId);
         }
         return subject;
     }

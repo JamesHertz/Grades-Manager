@@ -12,10 +12,13 @@ public interface Student extends Comparable<Student> {
     int numberOfEvaluation();
     float averageGrade(); // target ...
 
-    // interfaces :>
+    //interfaces :>
     void incNEval();
     void addEvaluation(EvalEntry eval);
-    void addSlot(SubjectSlot slot);
+    void addSlot(SubjectSlot slot); // new interface :)
+    void setFinalGrade(SubjectSlot slot);
+    //end interface
+
     Statistic statistic();
     SubjectSlot subjectSlot(String subject) throws NoSuchSubjectInStudentException;
     Iterator<SubjectSlot> listSubSlot();

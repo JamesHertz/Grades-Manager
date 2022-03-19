@@ -83,7 +83,7 @@ public class StAndSubTest {
     public void test03(){
         // test when you add a evaluation with the same id twice
         // test Subject part 1
-        Subject sub = new SubjectClass("Math");
+        Subject sub = new SubjectClass("Math", 0);
         test01();
        // test Subject
         assertEquals(sub.numberOfEvalSheet(), 0);
@@ -108,7 +108,7 @@ public class StAndSubTest {
     public void test04() {
         // testing Subject part 2
         // test when you add a evaluation with the same Id
-        Subject sub = new SubjectClass("English");
+        Subject sub = new SubjectClass("English", 0);
         int rand = 10 + Math.abs(new Random().nextInt(100));
         for(int i = 0; i < rand; i ++){
             try {
@@ -125,7 +125,7 @@ public class StAndSubTest {
         // test if when added a new student
         // it's the evaluation actually goes to the Student
         // internal dataStruture
-        Subject sub = new SubjectClass("English");
+        Subject sub = new SubjectClass("English", 0);
         int times = new Random().nextInt(10);
         try {
             for (int i = 0; i < times; i++) {

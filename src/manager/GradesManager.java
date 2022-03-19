@@ -24,9 +24,10 @@ public interface GradesManager {
     // addEvalEntry(List<....> eval)
     // returns the number of new Student created
     // returns some metadata ....
-    int commitBufHelper(String subjectId, String evalId) throws EmptyBufHelperException, EvaluationAlreadyExistsException;
+    int commitBufHelper(String subjectId, String evalId) throws EmptyBufHelperException, EvaluationAlreadyExistsException, SubjectDoesNotExistException;
     // is it really necessary??
 
+    Subject createSubject(String subId, int etcs) throws SubjectDoesNotExistException;
     // interesting I will think about this
     SubjectSlot studentSubjectSlot(int studentNumber, String subjectId) throws StudentDoesNotExistException, SubjectDoesNotExistException, NoSuchSubjectInStudentException, NoAddedStudentException;
 

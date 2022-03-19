@@ -16,6 +16,8 @@ public class StudentClass implements Student, Serializable {
     private final int number;
     private final Statistic statistic;
     private int nEval;
+    private int ects;
+    private int ectsFGradeProduct;
 
 
     public StudentClass(int number, String name){
@@ -24,6 +26,15 @@ public class StudentClass implements Student, Serializable {
         evaluationsBySubject = new TreeMap<>(); // maybe this is not necessary
         statistic = new StatisticClass();
         nEval = 0;
+        ects = 0;
+        ectsFGradeProduct = 0;
+    }
+
+    @Override
+    public void setFinalGrade(SubjectSlot slot) {
+       // about failures (etc) we solve it later
+        ects += slot.getSubEcts();
+        ectsFGradeProduct = ects * slot.getFinalGrade();
     }
 
     @Override
@@ -68,7 +79,8 @@ public class StudentClass implements Student, Serializable {
 
     @Override
     public float averageGrade() {
-        return statistic.averageData();
+        // I'm happy iei :)
+        return (float) ectsFGradeProduct/ects;
     }
 
     @Override

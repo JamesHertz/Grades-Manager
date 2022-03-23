@@ -11,10 +11,9 @@ public interface Student extends Comparable<Student> {
     String name();
     int numberOfEvaluation();
     float averageGrade(); // target ...
-
+    int getTotEcts();
     //interfaces :>
     void incNEval();
-    void addEvaluation(EvalEntry eval);
     void addSlot(SubjectSlot slot); // new interface :)
     void setFinalGrade(SubjectSlot slot);
     //end interface

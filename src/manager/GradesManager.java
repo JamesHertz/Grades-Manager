@@ -9,6 +9,7 @@ import subject.evaluations.EvalSheet;
 import subject.Student;
 import subject.exceptions.AlreadyEvaluatedException;
 import subject.exceptions.EvaluationAlreadyExistsException;
+import subject.exceptions.FinalGradeAlreadySetException;
 import subject.exceptions.NoSuchSubjectInStudentException;
 
 import java.util.Iterator;
@@ -25,6 +26,8 @@ public interface GradesManager {
     // returns the number of new Student created
     // returns some metadata ....
     int commitBufHelper(String subjectId, String evalId) throws EmptyBufHelperException, EvaluationAlreadyExistsException, SubjectDoesNotExistException;
+
+    int commitFinal(String subjectId) throws SubjectDoesNotExistException, FinalGradeAlreadySetException;
     // is it really necessary??
 
     Subject createSubject(String subId, int etcs) throws SubjectDoesNotExistException;
@@ -35,6 +38,7 @@ public interface GradesManager {
     Student student(int number) throws StudentDoesNotExistException, NoAddedStudentException;
     Subject subject(String subjectId) throws SubjectDoesNotExistException, NoAddedSubjectException;
 
+    Iterator<Student> top();
     Iterator<EvalSheet> listAllSheets();
     Iterator<Student> listAllStudents();
     //Iterator<Student> statistic();

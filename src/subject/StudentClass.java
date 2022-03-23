@@ -17,7 +17,7 @@ public class StudentClass implements Student, Serializable {
     private final Statistic statistic;
     private int nEval;
     private int ects;
-    private int ectsFGradeProduct;
+    private float ectsFGradeProduct;
 
 
     public StudentClass(int number, String name){
@@ -27,14 +27,15 @@ public class StudentClass implements Student, Serializable {
         statistic = new StatisticClass();
         nEval = 0;
         ects = 0;
-        ectsFGradeProduct = 0;
+        ectsFGradeProduct = 0.0f;
     }
 
     @Override
     public void setFinalGrade(SubjectSlot slot) {
        // about failures (etc) we solve it later
-        ects += slot.getSubEcts();
-        ectsFGradeProduct = ects * slot.getFinalGrade();
+        int ects = slot.getSubEcts();
+        ectsFGradeProduct += ects * slot.getFinalGrade();
+        this.ects += ects;
     }
 
     @Override
@@ -47,21 +48,6 @@ public class StudentClass implements Student, Serializable {
         nEval++;
     }
 
-    // will not happen anymore
-    @Override
-    public void addEvaluation(EvalEntry eval) {
-        String subject = eval.subjectId();
-        statistic.addData(eval.grade());
-        SubjectSlot slot = evaluationsBySubject.get(subject);
-        if(slot == null){
-            slot = new SubjectSlotClass(this, eval.subject());
-            evaluationsBySubject.put(subject, slot);
-        }
-        slot.addEvaluations(eval);
-        nEval++;
-    }
-
-
     @Override
     public Statistic statistic() {
         return statistic;
@@ -73,6 +59,11 @@ public class StudentClass implements Student, Serializable {
     }
 
     @Override
+    public int getTotEcts() {
+        return ects;
+    }
+
+    @Override
     public int numberOfEvaluation() {
         return nEval;
     }
@@ -80,7 +71,7 @@ public class StudentClass implements Student, Serializable {
     @Override
     public float averageGrade() {
         // I'm happy iei :)
-        return (float) ectsFGradeProduct/ects;
+        return  (ects == 0) ? 0.0f : ectsFGradeProduct/ects;
     }
 
     @Override

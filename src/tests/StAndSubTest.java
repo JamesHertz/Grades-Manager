@@ -4,6 +4,8 @@ import manager.GradesManagerClass;
 import manager.exceptions.StudentDoesNotExistException;
 import org.junit.Before;
 import org.junit.Test;
+import others.Rank;
+import others.Ranking;
 import others.evalHelper.EvalHelper;
 import others.evalHelper.SheetHelper;
 import others.evalHelper.SheetHelperClass;
@@ -13,10 +15,7 @@ import subject.evaluations.EvalSheet;
 import subject.exceptions.AlreadyEvaluatedException;
 import subject.exceptions.EvaluationAlreadyExistsException;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static org.junit.Assert.*;
 public class StAndSubTest {
@@ -247,9 +246,11 @@ public class StAndSubTest {
         fill(manager);
 
         try{
+            manager.createSubject("MATH", 6);
             int commits = manager.commitBufHelper("MATH", "test 1");
             assertEquals(commits, st.size());
         }catch(Exception e){
+            System.out.println(e.getMessage());
             fail();
         }
 
@@ -271,6 +272,65 @@ public class StAndSubTest {
         }
         fail();
     }
+
+    @Test
+    public void testFinal(){
+        final String SEP = "-";
+        // gonna add 2 students and verify that the calculations are right
+        GradesManager manager = new GradesManagerClass();
+        String[] students = {"61177-James", "6000-Hertz", "5999-Gomes", "1000-Furtado", "61700-Magui"};
+        String[] subs = {"math-6", "aed-10", "FSO-9", "SSTD-3", "LAP-6"};
+        float[] values = new float[students.length];
+        int[] totCredits = new int[students.length];
+        Random rad = new Random();
+        try{
+           for(int i = 0; i < subs.length; i++) {
+              String[] metaData = subs[i].split(SEP);
+              String subName = metaData[0];
+              int ect = Integer.parseInt(metaData[1]);
+              manager.createSubject(subName, ect);
+              for(int j = 0; j < students.length; j++){
+                  String[] stMeta = students[j].split(SEP);
+                  String stName = stMeta[1];
+                  int stNumber = Integer.parseInt(stMeta[0]);
+                  float stGrade = (float)  rad.nextInt(20);
+                  manager.addEvalEntry(stNumber, stName, stGrade);
+                  if (stGrade >= 10.0){
+                      values[j] += stGrade * ect;
+                      totCredits[j] += ect;
+                  }
+              }
+              manager.commitFinal(subName);
+           }
+
+           for(int j = 0; j < students.length; j++){
+               String[] stMeta = students[j].split(SEP);
+               int stNumber = Integer.parseInt(stMeta[0]);
+               Student st = manager.student(stNumber);
+               float avg_grade = (totCredits[j] == 0) ? 0.0f : values[j]/totCredits[j];
+               st.averageGrade();
+               //System.out.println("Expected: " + avg_grade + " got: " + st.averageGrade());
+               assertTrue(st.averageGrade() == avg_grade);
+               assertEquals(st.numberOfEvaluation(), subs.length);
+           }
+
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            fail();
+        }
+
+        /* Some testing things :)
+        Iterator<Student> it = manager.top();
+        Rank tmp = new Ranking();
+        while(it.hasNext()){
+
+            Student aux = it.next();
+            float avg_grade = aux.averageGrade();
+            System.out.printf("%03d - %d - %s - %.2f - %d\n",tmp.rank(avg_grade), aux.number(), aux.name(), avg_grade, aux.getTotEcts());
+        }
+        */
+    }
+    // plans make the test of all the cases :)
 
     private void fill(GradesManager manager){
         var rand = new Random();

@@ -53,9 +53,10 @@ public class SubjectSlotClass implements SubjectSlot, Serializable{
 
     @Override
     public void addFinalEntry(EvalEntry eval) {
-        finalGrade = (int) eval.grade();
+       finalGrade = (int) eval.grade();
        if(eval.grade() >= 10)
            student.setFinalGrade(this);
+        student.incNEval();// just being nice <<:)
     }
 
     @Override

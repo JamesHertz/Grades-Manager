@@ -1,6 +1,7 @@
 package manager;
 
 import manager.exceptions.*;
+import others.AvgGradeComp;
 import others.StudentByAlphOrder;
 import others.evalHelper.EvalHelper;
 import others.evalHelper.SheetHelper;
@@ -9,6 +10,7 @@ import subject.*;
 import subject.evaluations.EvalSheet;
 import subject.exceptions.AlreadyEvaluatedException;
 import subject.exceptions.EvaluationAlreadyExistsException;
+import subject.exceptions.FinalGradeAlreadySetException;
 import subject.exceptions.NoSuchSubjectInStudentException;
 
 import java.io.Serializable;
@@ -35,6 +37,7 @@ public class GradesManagerClass implements GradesManager, Serializable {
     private final SortedSet<Student> studentsByAlphOrder;
     private final List<EvalSheet> evalSheet; // still thinking about this
     private final SheetHelper bufHelper;
+    private final List<Student> studentList;
     private int newStudents;
     //private final List<Student> statistic;
 
@@ -45,6 +48,7 @@ public class GradesManagerClass implements GradesManager, Serializable {
         studentsByAlphOrder = new TreeSet<>(new StudentByAlphOrder());
         evalSheet = new ArrayList<>(DEFAULT_SIZE);
         bufHelper = new SheetHelperClass();
+        studentList = new LinkedList<>();
         newStudents = 0;
         //statistic = new ArrayList<>();
     }
@@ -65,7 +69,22 @@ public class GradesManagerClass implements GradesManager, Serializable {
         evaluations.put(realEvalId, aux);
         evalSheet.add(aux);
 
-        // how many new students were create :)
+        // change this thing later :)
+        int tmp = newStudents;
+        clearBufHelper();
+        return tmp;
+    }
+
+    @Override
+    public int commitFinal(String subjectId) throws SubjectDoesNotExistException, FinalGradeAlreadySetException {
+        if(bufHelper.isEmpty())
+            throw new EmptyBufHelperException();
+        Subject sub = subjects.get(subjectId);
+        if(sub == null)
+            throw new SubjectDoesNotExistException(subjectId);
+        sub.addFinalEvaluation(bufHelper);
+
+        // change this thing later
         int tmp = newStudents;
         clearBufHelper();
         return tmp;
@@ -110,6 +129,7 @@ public class GradesManagerClass implements GradesManager, Serializable {
             student = new StudentClass(number, name);
             students.put(number, student);
             studentsByAlphOrder.add(student);
+            studentList.add(student);
             newStudents++;
             //statistic.add(student);
         }
@@ -151,6 +171,12 @@ public class GradesManagerClass implements GradesManager, Serializable {
         return tmp;
     }
 
+
+    @Override
+    public Iterator<Student> top() {
+        studentList.sort(new AvgGradeComp());
+        return studentList.listIterator();
+    }
 
     @Override
     public Iterator<Subject> listAllSubjects() {

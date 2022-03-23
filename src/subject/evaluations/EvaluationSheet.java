@@ -15,7 +15,7 @@ public class EvaluationSheet implements EvalSheet, Serializable {
     private static final String DEFAULT_DESCRIPTION = "None!!";
     private static final long serialVersionUID = 0L;
     private final SortedSet<EvalEntry> ranking, byAlphabeticalOrder;
-    private final SortedSet<Student> students;
+   // private final SortedSet<Student> students;
     private final Statistic statistic;
     private final String id;
     private final Subject subject;
@@ -32,7 +32,7 @@ public class EvaluationSheet implements EvalSheet, Serializable {
         this.description = description;
         ranking = new TreeSet<>(); // problems later...
         byAlphabeticalOrder = new TreeSet<>(new EvalEntryComp());
-        students = new TreeSet<>();
+    //    students = new TreeSet<>();
         statistic = new StatisticClass();
         closed = false;
     }
@@ -42,9 +42,9 @@ public class EvaluationSheet implements EvalSheet, Serializable {
     @Override
     public void evaluate(Student student, EvalEntry eval) {
         // think about this later ?:
-        students.add(student);
+     //   students.add(student);
         //EvalEntry eval = new EvalEntryClass(this, student, grade);
-        student.addEvaluation(eval);
+        //student.addEvaluation(eval);
         statistic.addData(eval.grade());
         addEvaluation(eval);
     }

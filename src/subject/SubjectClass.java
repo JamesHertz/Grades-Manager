@@ -65,7 +65,7 @@ public class SubjectClass implements Subject, Serializable {
             // a lot to think yet :D
             // in some how get the student
             EvalEntry entry =  new EvalEntryClass(finalEval, st, tmp.getGrade());
-            slot.addEvaluations(entry);
+            slot.addFinalEntry(entry);
             finalEval.evaluate(st, entry);
         }
         finalEval.close();

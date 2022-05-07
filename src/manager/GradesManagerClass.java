@@ -30,6 +30,7 @@ public class GradesManagerClass implements GradesManager, Serializable {
     private static final int DEFAULT_SIZE = 25;
     private static final int STUDENTS_DEFAULT_SIZE = 200; // think about this
     private static final long serialVersionUID = 0L;
+    private static final Comparator<Student> TOP_COMP= new AvgGradeComp();
     private final SortedMap<String, Subject> subjects;
     private final Map<Integer, Student> students;
     // I gonna key you out dude :>
@@ -174,7 +175,7 @@ public class GradesManagerClass implements GradesManager, Serializable {
 
     @Override
     public Iterator<Student> top() {
-        studentList.sort(new AvgGradeComp());
+        studentList.sort(TOP_COMP);
         return studentList.listIterator();
     }
 

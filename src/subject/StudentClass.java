@@ -49,6 +49,11 @@ public class StudentClass implements Student, Serializable {
     }
 
     @Override
+    public void addDataToS(float data) {
+       statistic.addData(data);
+    }
+
+    @Override
     public Statistic statistic() {
         return statistic;
     }

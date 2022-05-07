@@ -4,13 +4,12 @@ import manager.exceptions.*;
 import others.Rank;
 import others.Ranking;
 import others.Statistic;
-import others.evalHelper.SheetHelper;
-import others.evalHelper.SheetHelperClass;
 import subject.*;
 import subject.evaluations.EvalEntry;
 import subject.evaluations.EvalSheet;
 import subject.exceptions.AlreadyEvaluatedException;
 import subject.exceptions.EvaluationAlreadyExistsException;
+import subject.exceptions.FinalGradeAlreadySetException;
 import subject.exceptions.NoSuchSubjectInStudentException;
 
 import java.io.*;
@@ -21,7 +20,7 @@ public class Main {
 
     //Fist Message
     private static final String INIT = "By ©James Hertz\nWelcome to Grades Manager\n";
-    private static final String DEFAULT_UPLOAD_FILE_NAME= "James.txt";
+    private static final String DEFAULT_UPLOAD_FILE_NAME = "James.txt";
 
     //Messages
     private static final String UNKNOWN_MESSAGE = "Unknown Command. Type '%s' to see all commands\n";
@@ -51,50 +50,54 @@ public class Main {
     private static final String INVALID_NUMBER = "Invalid number";
     private static final String EVAL_SHEET_ID_REQUEST = "Evaluation Sheet id: ";
     private static final String EVAL_PRINT_MESSAGE = "id: %s; pos: %d; neg: %d; none: %d; total: %d\n";
-    private static final String G_EXPLANATION = "G - grade; ", X_EXPLANATION= "X - Ausente, None, etc";
+    private static final String G_EXPLANATION = "G - grade; ", X_EXPLANATION = "X - Ausente, None, etc";
     private static final String STUDENT_NOT_FOUND = "Type '%s' to see all the students of the System\n";
     private static final String SUBJECT_NOT_FOUND = "Type '%s' to see all Subject of the System\n";
     private static final String EVAL_ID_NOT_FOUND = "Type '%s' to see all Evaluation Sheet of the System\n";
     private static final String EXIT_MESSAGE = "tururu";
 
     //Others
-    private static final int SUBJECT_ID = 0, EVAL_ID = 1, FILE_NAME = 2;
+    private static final int SUBJECT_ID = 0, EVAL_ID = 1, FILE_NAME = 2, ECTS = 3;
     private static final String PROMPT = "\n>>> ";
     private static final String JAMES = "Your fault James";
-    private static final String SEPARATOR = "\t", PATH = "./files/%s", PATH_O = "./object/%s";
+    private static final String SEPARATOR = "--", PATH = "/home/jhertz/IdeaProjects/TestAM/finalV/out/%s", PATH_O = "./object/%s";
     private static final String UPLOAD_MESSAGE = "%03d uploaded from %s. New students %d\n";
     private static final String GET_LINE_FORMATTER = "%s %s";
     private static final String INVALID_GRADE = "X", GRADE_FORMATTER = "%.1f";
     private static final String MANAGER = "Manager.obj";
-    private static final String FILE_NOT_FOUND ="Missing '%s'\n";
+    private static final String FILE_NOT_FOUND = "Missing '%s'\n";
     private static final String IO_MESSAGE = "Problems reading the file %s\n";
     private static final String ERROR = "ERROR!!\nContact the developer.";
+    private static final String COMMENT_SIGN = "#";
 
     //evaluation from student by subject sort by better grades till worse grades
     //evalSheet just display the evaluations in a normal way
     private enum Commands {
         EVALUATION("list all Evaluation of a given Evaluation Sheet"),
-        EVALUATIONS("list all Evaluation Sheet of the System" ),
+        EVALUATIONS("list all Evaluation Sheet of the System"),
         STUDENT("list all Evaluation of a given Student"),
         STUDENTS("list all Student of the System"),
         STUDENTSUB("list all Evaluations and some statistic of a given Student by Subject"),
         SUBJECT("list all Evaluation Sheet of a given Subject"),
         SUBJECTS("list all Subjects of the System"),
-       // STATISTIC("just by now"),
+        // STATISTIC("just by now"),
+        TOP("list the by highest average grade"),
         RANKING("list all Evaluation of given Evaluation Sheet by rank of better grades"),
         HELP("list all commands"),
-        $JAMES(""),
+        JAMES("upload grades :>"),
         $HERTZ(""),
         EXIT("Shuts down the program"),
         UNKNOWN_COMMAND("");
         private final String description;
+
         Commands(String description) {
             this.description = description;
         }
 
-        public boolean hidden(){
+        public boolean hidden() {
             return description.equals("");
         }
+
         public String description() {
             return description;
         }
@@ -134,7 +137,7 @@ public class Main {
                 case SUBJECTS:
                     subjects(manager);
                     break;
-                case $JAMES:
+                case JAMES:
                     trickyThing(in, manager);
                     break;
                 case $HERTZ:
@@ -148,6 +151,9 @@ public class Main {
                     break;*/
                 case EVALUATION:
                     evalSheet(in, manager);
+                    break;
+                case TOP:
+                    top(manager);
                     break;
                 case HELP:
                     help();
@@ -171,15 +177,36 @@ public class Main {
     }
 
 
+    private static void top(GradesManager manager) {
+        // change it later
+        // try to make it clearer
+        Iterator<Student> it = manager.top();
+        if (!it.hasNext())
+            System.out.println("No student added so far!");
+        else {
+            Student st = it.next();
+            if (st.getTotEcts() != 0) {
+                System.out.println("Pos   Number Name");
+                Rank rank = new Ranking();
+                do {
+                    if (st.getTotEcts() == 0)
+                        break;
+
+                    System.out.printf("%03dº - %d %s - avg: %.2f - ects: %d\n", rank.rank(st.averageGrade()), st.number(), st.name(), st.averageGrade(), st.getTotEcts());
+                    st = it.next();
+                } while (it.hasNext());
+            }else
+                System.out.println("No final grade was added so far!");
+        }
+    }
 
     private static void evaluations(GradesManager manager) {
         Iterator<EvalSheet> it = manager.listAllSheets();
-        if (it.hasNext()){
+        if (it.hasNext()) {
             System.out.println(EVALUATIONS_HEAD_MESSAGE);
             printEval(it);
-        }else
+        } else
             System.out.println(EVALUATIONS_ERROR_MESSAGE);
-
     }
 
     private static void student(Scanner in, GradesManager manager) {
@@ -187,12 +214,10 @@ public class Main {
         try {
             int number = Integer.parseInt(in.nextLine().trim());
             Student student = manager.student(number);
-            if(number == 61177)
-            System.out.println(student);
             System.out.printf(STUDENT_HEAD_MESSAGE, student.number(), student.name());
             System.out.println(STUDENT_SUB_HEAD_MESSAGE);
             Iterator<SubjectSlot> it = student.listSubSlot();
-            while(it.hasNext()){
+            while (it.hasNext()) {
                 SubjectSlot slot = it.next();
                 System.out.printf("\n# %s:\n", slot.subjectId());
                 printStudentEvaluations(slot.listAllEvaluations());
@@ -203,21 +228,21 @@ public class Main {
             System.out.printf("\n# - type '%s' to some statistic by Subject\n", Commands.STUDENTSUB);
         } catch (NumberFormatException e) {
             System.out.println(INVALID_NUMBER);
-        }catch (NoAddedStudentException e) {
+        } catch (NoAddedStudentException e) {
             System.out.println(STUDENTS_ERROR_MESSAGE);
         } catch (StudentDoesNotExistException e) {
             handleStudentDoesExistException(e);
         }
     }
 
-    private static void printStudentEvaluations(Iterator<EvalEntry> it){
+    private static void printStudentEvaluations(Iterator<EvalEntry> it) {
         while (it.hasNext()) {
             EvalEntry eval = it.next();
             System.out.printf(STUDENT_PRINT_MESSAGE, eval.evaluationsId(), formatGrade(eval.grade()));
         }
     }
 
-    private static void studentSub(Scanner in, GradesManager manager){
+    private static void studentSub(Scanner in, GradesManager manager) {
         System.out.print(STUDENT_REQUEST_MESSAGE);
         String number = in.nextLine().trim();
         System.out.print(SUBJECT_REQUEST_MESSAGE);
@@ -233,13 +258,13 @@ public class Main {
             printStatistic(slot.statistic());
         } catch (NumberFormatException e) {
             System.out.println(INVALID_NUMBER);
-        } catch(NoAddedStudentException  e){
+        } catch (NoAddedStudentException e) {
             System.out.println(SUBJECTS_ERROR_MESSAGE);
         } catch (StudentDoesNotExistException e) {
             handleStudentDoesExistException(e);
-        }catch(SubjectDoesNotExistException e) {
+        } catch (SubjectDoesNotExistException e) {
             handleSubjectDoesNotExistException(e);
-        }catch( NoSuchSubjectInStudentException e) {
+        } catch (NoSuchSubjectInStudentException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -259,15 +284,15 @@ public class Main {
     private static void subject(Scanner in, GradesManager manager) {
         System.out.print(SUBJECT_REQUEST_MESSAGE);
         String subject = in.nextLine().trim().toUpperCase();
-        try{
+        try {
             Subject tmp = manager.subject(subject);
-            Iterator<EvalSheet> it =tmp.listEvaluations();
+            Iterator<EvalSheet> it = tmp.listEvaluations();
             System.out.printf(SUBJECT_PRINT_MESSAGE, subject);
             printEval(it);
             printStatistic(tmp.statistic());
-        }catch (NoAddedSubjectException e) {
+        } catch (NoAddedSubjectException e) {
             System.out.println(SUBJECTS_ERROR_MESSAGE);
-        }catch(SubjectDoesNotExistException e) {
+        } catch (SubjectDoesNotExistException e) {
             handleSubjectDoesNotExistException(e);
         }
     }
@@ -287,25 +312,34 @@ public class Main {
     //------------------------------------------------------------------------------------
     private static void trickyThing(Scanner in, GradesManager manager) {
         String fileName = in.nextLine();
-        if(fileName.equals("")){
+        if (fileName.equals("")) {
             fileName = DEFAULT_UPLOAD_FILE_NAME;// "James.txt";//in.nextLine();
         }
         try {
             Scanner input = new Scanner(new FileReader(fileName));
             while (input.hasNextLine()) {
-                myStuff(input.nextLine().split(SEPARATOR), manager);
+                String line = removeComments(input.nextLine());
+                if(line.equals(""))
+                    continue;
+                myStuff(line.split(SEPARATOR), manager);
             }
 
-        }catch(AlreadyEvaluatedException | EvaluationAlreadyExistsException | SubjectDoesNotExistException e){
+        } catch (AlreadyEvaluatedException | EvaluationAlreadyExistsException | SubjectDoesNotExistException | FinalGradeAlreadySetException e) {
             System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.printf("Problems reading the file: %s.\nError", e.getMessage());
-
+        } catch (IOException e){
+            System.out.println("Problems script file.\nError:");
+            e.printStackTrace();
+        } catch (IOWrapperException e) {
+            System.out.printf("Problems reading the file: %s.\nError:\n", e.getFileName());
+            e.printStackTrace();
         }
     }
 
-    private static void myStuff(String[] names, GradesManager manager) throws IOException, AlreadyEvaluatedException, EmptyBufHelperException, EvaluationAlreadyExistsException, SubjectDoesNotExistException {
+    private static void myStuff(String[] names, GradesManager manager) throws AlreadyEvaluatedException, EmptyBufHelperException, EvaluationAlreadyExistsException, SubjectDoesNotExistException, FinalGradeAlreadySetException, IOWrapperException {
         int newEval = 0, newSt;
+        //new Scanner("me"); plans
+        //System.out.println(Arrays.toString(names));
+        manager.createSubject(names[SUBJECT_ID], Integer.parseInt(names[ECTS]));
         try {
             Scanner input = new Scanner(new FileReader(String.format(PATH, names[FILE_NAME])));
             while (input.hasNextLine()) {
@@ -316,10 +350,10 @@ public class Main {
                 newEval++;
             }
             input.close();
-        }catch(IOException e){
-            throw new IOException(names[FILE_NAME]);
+        } catch (IOException e) {
+            throw new IOWrapperException(names[FILE_NAME], e);
         }
-        newSt = manager.commitBufHelper(names[SUBJECT_ID], names[EVAL_ID]);
+        newSt = manager.commitFinal(names[SUBJECT_ID]); //manager.commitBufHelper(names[SUBJECT_ID], names[EVAL_ID]);
 
         System.out.printf(UPLOAD_MESSAGE, newEval, names[SUBJECT_ID], newSt);
     }
@@ -331,8 +365,8 @@ public class Main {
         return name;
     }
 
-    private static void hertz(Scanner in, GradesManager manager){
-        try{
+    private static void hertz(Scanner in, GradesManager manager) {
+        try {
             final String fileName = in.nextLine().trim();
             ObjectOutputStream output = new ObjectOutputStream(
                     new BufferedOutputStream(new FileOutputStream(String.format(PATH_O, fileName))));
@@ -340,23 +374,23 @@ public class Main {
             output.flush();
             output.close();
             System.out.println("Done!!");
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("Your fault Hertz");
         }
     }
 
-    private static GradesManager start(){
-        try{
+    private static GradesManager start() {
+        try {
             ObjectInputStream input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(MANAGER)));
             GradesManager manager = (GradesManager) input.readObject();
             input.close();
             return manager;
-        }catch(FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             System.out.printf(FILE_NOT_FOUND, MANAGER);
-        }catch(IOException e){
+        } catch (IOException e) {
             System.out.printf(IO_MESSAGE, MANAGER);
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println(ERROR);
         }
         System.exit(-1);
@@ -391,12 +425,12 @@ public class Main {
     private static void evalSheet(Scanner in, GradesManager manager) {
         System.out.print(EVAL_SHEET_ID_REQUEST);
         String evalId = in.nextLine().trim();
-        try{
+        try {
             EvalSheet evalSheet = manager.evalSheet(evalId);
             Iterator<EvalEntry> it = evalSheet.listByAlphabeticalOrder();//Chech it lat
             //What if a evalSheet does not have any evaluation
             System.out.println(EVAL_SHEET_HEAD_MESSAGE);
-            while(it.hasNext()){
+            while (it.hasNext()) {
                 EvalEntry eval = it.next();
                 Student student = eval.student();
                 System.out.printf(EVAL_SHEET_PRINT_MESSAGE, student.number(), student.name(), formatGrade(eval.grade()));
@@ -406,12 +440,12 @@ public class Main {
 
         } catch (NoAddedEvalSheetException e) {
             System.out.println(EVALUATIONS_ERROR_MESSAGE);
-        }catch(EvalSheetDoesNotExistException e){
+        } catch (EvalSheetDoesNotExistException e) {
             handleEvalSheetDoesNotExitException(e);
         }
     }
 
-    private static void symbols(){
+    private static void symbols() {
         System.out.println("id - Evaluation Sheet id");
         System.out.println("none - same meaning as 'X'");
         System.out.println("pos  - positive grade");
@@ -430,8 +464,9 @@ public class Main {
 
 
     }
-    private static void printEval(Iterator<EvalSheet> it){
-        while(it.hasNext()){
+
+    private static void printEval(Iterator<EvalSheet> it) {
+        while (it.hasNext()) {
             EvalSheet sheet = it.next();
             Statistic tmp = sheet.statistic();
             System.out.printf(EVAL_PRINT_MESSAGE, sheet.evaluationId(),
@@ -439,7 +474,7 @@ public class Main {
         }
     }
 
-    private static void printExplanations(){
+    private static void printExplanations() {
         System.out.println();
         System.out.println(G_EXPLANATION + X_EXPLANATION);
     }
@@ -474,10 +509,10 @@ public class Main {
     }
      */
 
-    private static void printStatistic(Statistic statistic){
+    private static void printStatistic(Statistic statistic) {
         int total = statistic.numberOfData();
         System.out.println("\nStatistic: ");
-        System.out.printf("Positive grade: %d/%d - %.2f%%\n", statistic.positiveData(),total, statistic.positivePercent());
+        System.out.printf("Positive grade: %d/%d - %.2f%%\n", statistic.positiveData(), total, statistic.positivePercent());
         System.out.printf("Negative grade: %d/%d - %.2f%%\n", statistic.negativesData(), total, statistic.negativePercent());
         System.out.printf("None grade: %d/%d - %.2f%%\n", statistic.noneData(), total, statistic.nonePercent());
         System.out.printf("Average grade: %.2f\n", statistic.averageData());
@@ -485,20 +520,26 @@ public class Main {
     }
 
 
-    private static void handleStudentDoesExistException(StudentDoesNotExistException e){
+    private static void handleStudentDoesExistException(StudentDoesNotExistException e) {
         System.out.println(e.getMessage());
         System.out.printf(STUDENT_NOT_FOUND, Commands.STUDENTS);
     }
 
-    private static void handleSubjectDoesNotExistException(SubjectDoesNotExistException e){
+    private static void handleSubjectDoesNotExistException(SubjectDoesNotExistException e) {
         System.out.println(e.getMessage());
         System.out.printf(SUBJECT_NOT_FOUND, Commands.SUBJECTS);
 
     }
 
-    private static void handleEvalSheetDoesNotExitException(EvalSheetDoesNotExistException e){
+    private static void handleEvalSheetDoesNotExitException(EvalSheetDoesNotExistException e) {
         System.out.println(e.getMessage());
         System.out.printf(EVAL_ID_NOT_FOUND, Commands.EVALUATIONS);
+    }
+
+    private static String removeComments(String line){
+        if(line.startsWith(COMMENT_SIGN))
+            return "";
+        return line.split(COMMENT_SIGN)[0];
     }
 
 }

@@ -49,6 +49,7 @@ public class SubjectSlotClass implements SubjectSlot, Serializable{
         evaluations.add(eval);
         statistic.addData(eval.grade());
         student.incNEval();// just being nice <<:)
+        student.addDataToS(eval.grade()); // join the two
     }
 
     @Override
@@ -56,7 +57,12 @@ public class SubjectSlotClass implements SubjectSlot, Serializable{
        finalGrade = (int) eval.grade();
        if(eval.grade() >= 10)
            student.setFinalGrade(this);
+       addEvaluations(eval);
+       /*
         student.incNEval();// just being nice <<:)
+        evaluations.add(eval); // look at this later :)
+
+        */
     }
 
     @Override

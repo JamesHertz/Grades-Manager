@@ -15,6 +15,7 @@ public interface Student extends Comparable<Student> {
     //interfaces :>
     void incNEval();
     void addSlot(SubjectSlot slot); // new interface :)
+    void addDataToS(float data); // join with incNEval ....
     void setFinalGrade(SubjectSlot slot);
     //end interface
 

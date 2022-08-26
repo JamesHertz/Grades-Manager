@@ -13,6 +13,7 @@ import subject.exceptions.FinalGradeAlreadySetException;
 import subject.exceptions.NoSuchSubjectInStudentException;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Scanner;
 
@@ -57,7 +58,7 @@ public class Main {
     private static final String EXIT_MESSAGE = "tururu";
 
     //Others
-    private static final int SUBJECT_ID = 0, EVAL_ID = 1, FILE_NAME = 2, ECTS = 3;
+    private static final int SUBJECT_ID = 0, EVAL_ID = 1, FILE_NAME = 2, ECTS = 3, FINAL = 4;
     private static final String PROMPT = "\n>>> ";
     private static final String JAMES = "Your fault James";
     private static final String SEPARATOR = "--", PATH = "/home/jhertz/IdeaProjects/TestAM/finalV/out/%s", PATH_O = "./object/%s";
@@ -313,13 +314,13 @@ public class Main {
     private static void trickyThing(Scanner in, GradesManager manager) {
         String fileName = in.nextLine();
         if (fileName.equals("")) {
-            fileName = DEFAULT_UPLOAD_FILE_NAME;// "James.txt";//in.nextLine();
+            fileName = "me.txt";//DEFAULT_UPLOAD_FILE_NAME;// "James.txt";//in.nextLine();
         }
         try {
             Scanner input = new Scanner(new FileReader(fileName));
             while (input.hasNextLine()) {
                 String line = removeComments(input.nextLine());
-                if(line.equals(""))
+                if(line.isEmpty())
                     continue;
                 myStuff(line.split(SEPARATOR), manager);
             }
@@ -340,9 +341,14 @@ public class Main {
         //new Scanner("me"); plans
         //System.out.println(Arrays.toString(names));
         manager.createSubject(names[SUBJECT_ID], Integer.parseInt(names[ECTS]));
+        boolean nf = false;
+        if(names.length >= 5)
+           nf = "nf".equals(names[FINAL]);
+
+
         try {
             Scanner input = new Scanner(new FileReader(String.format(PATH, names[FILE_NAME])));
-            while (input.hasNextLine()) {
+            while (input.hasNext()) {// use input.hasNext() instead :(
                 int number = input.nextInt();
                 String name = getLine(input);
                 float grade = input.nextFloat();
@@ -353,7 +359,10 @@ public class Main {
         } catch (IOException e) {
             throw new IOWrapperException(names[FILE_NAME], e);
         }
-        newSt = manager.commitFinal(names[SUBJECT_ID]); //manager.commitBufHelper(names[SUBJECT_ID], names[EVAL_ID]);
+        if(nf)
+            newSt = manager.commitBufHelper(names[SUBJECT_ID], names[EVAL_ID]);
+        else
+            newSt = manager.commitFinal(names[SUBJECT_ID]); //manager.commitBufHelper(names[SUBJECT_ID], names[EVAL_ID]);
 
         System.out.printf(UPLOAD_MESSAGE, newEval, names[SUBJECT_ID], newSt);
     }

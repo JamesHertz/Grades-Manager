@@ -8,3 +8,4 @@ src/META-INF/
 META-INF
 me.txt
 Manager.obj
+*.sh

@@ -31,7 +31,11 @@ create table Enrollment (
     foreign key (cs_id) references Course
 );
 
-
+-- PROPOSAL FOR INSTEAD OF THE TRIGGERS :)
+create view MyStudent as
+    select st_name as name, st_number as number, sum(credits) as total_credits, round(sum(credits * grade)/sum(credits), 2)  as avg_grade
+    from Student natural inner join Enrollment natural inner join Course
+    group by name, number;
 -- trigger to add number to set number to
 /*
 DEPRECATED :)
@@ -124,11 +128,3 @@ create trigger update_student_attrs_III
         end
         where st_number = old.st_number;
     end;
-
-/*
-PROPOSAL FOR INSTEAD OF THE TRIGGERS :)
-create view new_student as
-    select st_name as name, st_number as number, sum(credits) as total_credits, (sum(credits * grade)/sum(credits))  as avg_grade
-    from Student natural inner join Enrollment natural inner join Course
-    group by name, number;
- */

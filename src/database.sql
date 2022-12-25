@@ -124,3 +124,11 @@ create trigger update_student_attrs_III
         end
         where st_number = old.st_number;
     end;
+
+/*
+PROPOSAL FOR INSTEAD OF THE TRIGGERS :)
+create view new_student as
+    select st_name as name, st_number as number, sum(credits) as total_credits, (sum(credits * grade)/sum(credits))  as avg_grade
+    from Student natural inner join Enrollment natural inner join Course
+    group by name, number;
+ */

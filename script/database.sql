@@ -1,13 +1,13 @@
-drop table Enrollment;
-drop table Student;
-drop table Course;
+ -- drop table Enrollment;
+ -- drop table Student;
+ -- drop table Course;
 
 create table Student (
     st_number int primary key,
     st_name text,
-    total_credits int default 0,
-    avg_numerator real default 0.0,
-    average_grade real generated always as ( avg_numerator / total_credits) VIRTUAL
+    total_credits int default 0
+    -- avg_numerator real default 0.0,
+    -- average_grade real generated always as ( avg_numerator / total_credits) VIRTUAL
 );
 
 create table Course (
@@ -36,6 +36,7 @@ create view MyStudent as
     select st_name as name, st_number as number, sum(credits) as total_credits, round(sum(credits * grade)/sum(credits), 2)  as avg_grade
     from Student natural inner join Enrollment natural inner join Course
     group by name, number;
+
 -- trigger to add number to set number to
 /*
 DEPRECATED :)
@@ -57,6 +58,8 @@ create trigger set_enroll_number
  */
 -- trigger to calculate the final grade
 
+
+/*
 create trigger update_student_attrs_I
     after insert on Enrollment
     begin
@@ -128,3 +131,4 @@ create trigger update_student_attrs_III
         end
         where st_number = old.st_number;
     end;
+ */

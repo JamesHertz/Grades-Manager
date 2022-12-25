@@ -1,11 +1,13 @@
- -- drop table Enrollment;
- -- drop table Student;
- -- drop table Course;
+drop table if exists Enrollment;
+drop table if exists Student;
+drop table if exists Course;
+drop view  if exists MyStudent;
+drop view  if exists TopBoard;
 
 create table Student (
     st_number int primary key,
-    st_name text,
-    total_credits int default 0
+    st_name text
+    -- total_credits int default 0
     -- avg_numerator real default 0.0,
     -- average_grade real generated always as ( avg_numerator / total_credits) VIRTUAL
 );
@@ -33,9 +35,14 @@ create table Enrollment (
 
 -- PROPOSAL FOR INSTEAD OF THE TRIGGERS :)
 create view MyStudent as
-    select st_name as name, st_number as number, sum(credits) as total_credits, round(sum(credits * grade)/sum(credits), 2)  as avg_grade
+    select st_number as number, st_name as name, sum(credits) as total_credits, round(sum(credits * grade)/sum(credits), 2) as avg_grade
     from Student natural inner join Enrollment natural inner join Course
     group by name, number;
+
+create view TopBoard as
+    select * 
+    from MyStudent
+    order by total_credits desc, avg_grade desc;
 
 -- trigger to add number to set number to
 /*

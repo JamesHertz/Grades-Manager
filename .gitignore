@@ -1,0 +1,11 @@
+# Project exclude paths
+/out/
+/.idea/
+/files/
+/grades-base/
+/script/translator
+*.iml
+*.txt
+*.db
+.gitignore
+*.json

@@ -1,6 +1,6 @@
 import jh.grades.manager.GradesManager;
 import jh.grades.manager.MyManager;
-import jh.grades.manager.Student;
+import jh.grades.manager.SimpleStudent;
 
 import java.util.Iterator;
 import java.util.Scanner;
@@ -20,13 +20,13 @@ public class Main {
 
     private static void list_students(Scanner in, GradesManager manager){
         in.nextLine();
-        Iterator<Student> students = manager.listAllStudents();
+        Iterator<SimpleStudent> students = manager.listAllStudents();
         if(!students.hasNext())
             System.out.println("No students!");
         else {
             System.out.println("students: ");
             while(students.hasNext()){
-                Student st = students.next();
+                SimpleStudent st = students.next();
                 System.out.printf("%6d %s\n", st.number(), st.name());
             }
         }

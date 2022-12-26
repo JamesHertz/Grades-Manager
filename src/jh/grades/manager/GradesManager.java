@@ -12,6 +12,6 @@ public interface GradesManager {
          how to invalidate the cache?
      */
 
-    Iterator<Student> top();
-    Iterator<Student> listAllStudents();
+    Iterator<SimpleStudent> top();
+    Iterator<SimpleStudent> listAllStudents();
 }

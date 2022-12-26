@@ -2,7 +2,7 @@ package jh.grades.manager;
 
 import java.util.Iterator;
 
-public class AcademicStudent implements EditStudent{
+class AcademicStudent implements EditStudent{
 
     private final String name;
     private final int number;

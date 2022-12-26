@@ -13,6 +13,8 @@ public class Main {
     private static final String LIST_STUDENTS = "listStudents";
     public static final String QUIT = "quit";
 
+    public static final String PROMPT = ">> ";
+
     public static void main(String[] args) {
         System.out.println(INIT_MESSAGE);
         run_commands();
@@ -37,12 +39,17 @@ public class Main {
         GradesManager manager = new MyManager();
         String cmd;
         do{
-            cmd = in.next();
+            System.out.print(PROMPT);
+            cmd = in.next(); // do later
             switch (cmd){
                 case LIST_STUDENTS:
                     list_students(in, manager);
+                    break;
                 case QUIT:
                     System.out.println("bye bye");
+                    break;
+                default:
+                    System.out.println("Unknown command: " + cmd);
             }
         }while (!cmd.equals(QUIT));
     }

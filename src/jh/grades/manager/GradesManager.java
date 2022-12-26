@@ -4,14 +4,6 @@ import java.util.Iterator;
 
 public interface GradesManager {
 
-    /*
-        loadData() =>
-                        Map<String, Subject> subjects;
-                        Map<String, Student> students;
-         question? => how to change data?
-         how to invalidate the cache?
-     */
-
-    Iterator<SimpleStudent> top();
+    Iterator<Student> top();
     Iterator<SimpleStudent> listAllStudents();
 }

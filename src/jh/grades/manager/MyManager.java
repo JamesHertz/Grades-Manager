@@ -1,57 +1,53 @@
 package jh.grades.manager;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import static jh.grades.manager.DataBaseConnection.*;
 
 public class MyManager implements GradesManager{
 
     /*
-        => let me think about this....
-        I could for example have the following:
-
-        # first approach:
-
-        GradesManager{
-            Map<String, Student> students;
-            Map<String, Course> courses;
-        }
-
-        Student{
-            // all it's info
-            Enrollments[] enrolls;
-        }
-
-        Course{
-            // all it's info
-            Enrollments[] enrolls;
-        }
-        ## The idea would be that I just use the database to store the data
-        load them when the app boots up and make changes in these datastructures them
-        save when the app goes down.
-
-        ### Problems:
-            - The complexity of this task increase as the app gets more and more data
-        # Second approach
-            -> Every option just queries the database and returns the data.
-         ## It doesn't seem to be bad, the only problem is that at some point I have
-         to use caching.
-     */
-    /*
         A student is built when a query is done.
      */
     private final Connection dbConnection;
+
     public MyManager(){
         dbConnection = getConnection(); // what to when this is null??
     }
 
     @Override
-    public Iterator<SimpleStudent> top() {
+    public Iterator<Student> top() {
         return null;
     }
 
     @Override
     public Iterator<SimpleStudent> listAllStudents() {
-        return null;
+        try(
+            Statement smt = dbConnection.createStatement();
+            ResultSet res = smt.executeQuery("select st_name, st_number from Student;")
+        ){
+            List<SimpleStudent> students = new LinkedList<>();
+
+            while(res.next()){
+                students.add(
+                    new AcademicStudent(
+                        res.getString("st_name"), 
+                        res.getInt("st_number")
+                    )
+                );
+            }
+
+            return students.iterator();
+        }catch(Exception e){
+            e.printStackTrace(); // TODO: delete later :)
+            return Collections.emptyIterator();
+        }
+        
     }
 }

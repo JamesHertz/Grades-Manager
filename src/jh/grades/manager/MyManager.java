@@ -7,6 +7,7 @@ import java.util.*;
 import static jh.grades.manager.DataBaseConnection.*;
 import static jh.grades.manager.EnrollsProxy.EMPTY_ENROLLS;
 
+// TODO: finish course thing and start working on the inserting info commands.
 public class MyManager implements GradesManager{
 
     // TODO: check caching rows jdbc docs
@@ -26,6 +27,14 @@ public class MyManager implements GradesManager{
         return cmpByName.compare(s1, s2); // compare by name
     };
 
+
+    // SQL QUERIES
+    private static final String GET_STUDENT_QUERY = "select number, name, avg_grade, total_credits from MyStudent";
+    private static final String GET_COURSE_QUERY = "select cs_id, cs_name, credits, cs_year, cs_semester from Course";
+    private static final String GET_ENROLLS_QUERY = "select cs_id, grade from Enrollment where st_number = ?";
+
+
+    // the data structures
     private static final int DEFAULT_STUDENTS = 400;
     private final SortedMap<Integer, Student> students;
     private final Map<String, Course> courses;
@@ -43,15 +52,13 @@ public class MyManager implements GradesManager{
         init_data_structure();
     }
 
-    private static final String GET_STUDENT_QUERY = "select number, name, avg_grade, total_credits from MyStudent";
-    private static final String GET_COURSE_QUERY = "select cs_id, cs_name, credits, cs_year, cs_semester from Course";
 
 
     // TODO: fix this naive approach
     private EnrollsProxy create_enrolls_proxy(int student_number){
         return () -> {
             try(
-                    PreparedStatement smt = dbConnection.prepareStatement("select cs_id, grade from Enrollment where st_number = ?");
+                    PreparedStatement smt = dbConnection.prepareStatement(GET_ENROLLS_QUERY);
             ){
                 smt.setInt(1, student_number);
                 ResultSet res = smt.executeQuery();

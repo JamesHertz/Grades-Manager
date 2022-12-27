@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 public interface GradesManager {
 
+    Student getStudent(int number);
     Iterator<Student> top();
-    Iterator<SimpleStudent> listAllStudents();
+    Iterator<Student> listAllStudents();
 }

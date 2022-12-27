@@ -1,7 +1,4 @@
-import jh.grades.manager.GradesManager;
-import jh.grades.manager.MyManager;
-import jh.grades.manager.SimpleStudent;
-import jh.grades.manager.Student;
+import jh.grades.manager.*;
 
 import java.util.Iterator;
 import java.util.Scanner;
@@ -11,7 +8,7 @@ public class Main {
     private static final String INIT_MESSAGE = "By ©James Hertz\nWelcome to Grades Manager\n";
 
     // adhoc commands
-    private static final String LIST_STUDENTS = "listStudents";
+    private static final String LIST_STUDENTS = "students";
     private static final String TOP = "top";
     public static final String QUIT = "quit";
 
@@ -51,14 +48,42 @@ public class Main {
 
     private static void list_students(Scanner in, GradesManager manager){
         in.nextLine();
-        Iterator<SimpleStudent> students = manager.listAllStudents();
+        Iterator<Student> students = manager.listAllStudents();
         if(!students.hasNext())
             System.out.println("No students!");
         else {
             System.out.println("NUMBER  NAME");
             while(students.hasNext()){
-                SimpleStudent st = students.next();
+                Student st = students.next();
                 System.out.printf("%6d  %s\n", st.number(), st.name());
+            }
+        }
+    }
+
+    private static void print_enrolls(Scanner in, GradesManager manager){
+        int number = in.nextInt();
+        in.nextLine();
+
+        if(number < 0){
+            System.out.println("Invalid number, it should be greater than 0");
+            return;
+        }
+
+        Student st = manager.getStudent(number);
+        if(st == null) {
+            System.out.println("No such student");
+        }else{
+            System.out.printf("number: %d; name: %s\n", st.number(), st.name());
+            Iterator<Enrollment> enrolls = st.getEnrollments();
+
+            if(!enrolls.hasNext()) System.out.println("No enrollments");
+            else{
+                while(enrolls.hasNext()){
+                    Enrollment aux = enrolls.next();
+
+                    System.out.printf("> %s\n", aux.getCourse().name());
+                    System.out.printf("grade: %.2f\n", aux.grade());
+                }
             }
         }
     }
@@ -76,11 +101,15 @@ public class Main {
                 case TOP:
                     top_board(in, manager);
                     break;
+                case "enrolls":
+                    print_enrolls(in, manager);
+                    break;
                 case QUIT:
                     System.out.println("bye bye");
                     break;
                 default:
                     System.out.println("Unknown command: " + cmd);
+                    in.nextLine();
             }
         }while (!cmd.equals(QUIT));
     }

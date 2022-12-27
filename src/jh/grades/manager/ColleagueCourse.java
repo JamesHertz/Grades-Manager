@@ -2,28 +2,17 @@ package jh.grades.manager;
 
 public class ColleagueCourse implements Course{
 
-    private String id, name;
+    private final String id, name;
 
-    private int year, credits;
-    private Semesters semester;
+    private final int year, credits;
+    private final Semesters semester;
 
-    public ColleagueCourse(String id, String name, int credits) {
+    public ColleagueCourse(String id, String name, int credits, int year, Semesters semester) {
         this.id = id;
         this.name = name;
         this.credits = credits;
-        this.year = 0;
-        this.semester = null;
-    }
-
-    // TODO: think about this arbitrary decision :(
-    public ColleagueCourse setSemester(Semesters semester) {
-        this.semester = semester;
-        return this;
-    }
-
-    public ColleagueCourse setYear(int year) {
         this.year = year;
-        return this;
+        this.semester = semester;
     }
 
     @Override

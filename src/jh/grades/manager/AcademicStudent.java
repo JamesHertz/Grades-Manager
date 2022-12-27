@@ -12,7 +12,7 @@ class AcademicStudent implements EditStudent{
 
     private EnrollsProxy enrolls;
 
-    public AcademicStudent(String name, int number){
+    public AcademicStudent(int number, String name){
         this.name = name;
         this.number = number;
         this.enrolls = EnrollsProxy.EMPTY_ENROLLS;
@@ -43,7 +43,7 @@ class AcademicStudent implements EditStudent{
 
     @Override
     public Iterator<Enrollment> getEnrollments() {
-        return enrolls.getEnrolls(this.number);
+        return enrolls.getEnrolls();
     }
 
     @Override

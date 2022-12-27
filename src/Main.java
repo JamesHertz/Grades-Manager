@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Scanner;
 
 public class Main {
+    // TODO: have a mini animation playing on the background (writing loading on the screen)
     //Fist Message
     private static final String INIT_MESSAGE = "By ©James Hertz\nWelcome to Grades Manager\n";
 
@@ -73,7 +74,7 @@ public class Main {
         if(st == null) {
             System.out.println("No such student");
         }else{
-            System.out.printf("number: %d; name: %s\n", st.number(), st.name());
+            System.out.printf("Student: %s - %d\n", st.name(), st.number());
             Iterator<Enrollment> enrolls = st.getEnrollments();
 
             if(!enrolls.hasNext()) System.out.println("No enrollments");
@@ -81,11 +82,18 @@ public class Main {
                 while(enrolls.hasNext()){
                     Enrollment aux = enrolls.next();
 
-                    System.out.printf("> %s\n", aux.getCourse().name());
-                    System.out.printf("grade: %.2f\n", aux.grade());
+                    Course course = aux.getCourse();
+                    System.out.printf("> %s - (%s)\n",course.id(), course.name());
+                    System.out.printf("final-grade: %.2f\n\n", aux.grade());
                 }
             }
         }
+    }
+
+    private static void print_courses(Scanner in, GradesManager manager){
+        in.nextLine();
+        // try to print the courses by year and by semester
+        // then by id number
     }
     private static void run_commands(){
         Scanner in = new Scanner(System.in);
@@ -103,6 +111,9 @@ public class Main {
                     break;
                 case "enrolls":
                     print_enrolls(in, manager);
+                    break;
+                case "courses":
+                    print_courses(in, manager);
                     break;
                 case QUIT:
                     System.out.println("bye bye");

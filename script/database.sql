@@ -37,6 +37,7 @@ create table Enrollment (
 create view MyStudent as
     select st_number as number, st_name as name, sum(credits) as total_credits, round(sum(credits * grade)/sum(credits), 2) as avg_grade
     from Student natural inner join Enrollment natural inner join Course
+    where grade >= 10
     group by name, number;
 
 create view TopBoard as

@@ -122,7 +122,6 @@ public class Main {
                 else
                     System.out.println(format_ord_num(sem.getId()) + " semester");
 
-
                 System.out.println();
             }
         }
@@ -130,6 +129,17 @@ public class Main {
         // try to print the courses by year and by semester
         // then by id number
     }
+    /*
+        How to insert data into my program?
+        Which commands should I have?
+        IDEAS:
+            -> I need something  that goes to my school website takes the html
+               parses it and upload the grades to my database.
+            -> But that works just for final grades.
+            -> Well I am just supporting final grades right now.
+            -> But I somehow need to have another way of uploading the grades.
+     */
+
     private static void run_commands(){
         Scanner in = new Scanner(System.in);
         GradesManager manager = new MyManager();

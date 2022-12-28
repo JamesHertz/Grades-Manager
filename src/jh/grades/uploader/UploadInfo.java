@@ -5,7 +5,6 @@ public abstract class UploadInfo {
     public UploadInfo(String course_id){
         this.course_id = course_id;
     }
-
     public String getCourseId() {
         return course_id;
     }

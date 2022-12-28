@@ -8,6 +8,9 @@ public enum Semesters {
         this.id = id;
     }
 
+    public int getId(){
+        return this.id;
+    }
     public static Semesters getSemester(int id){
         for(Semesters s : values()){
             if(s.id == id) return s;

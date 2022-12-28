@@ -137,4 +137,9 @@ public class MyManager implements GradesManager{
     public Iterator<Student> listAllStudents() {
         return studentsByOrder.iterator();
     }
+
+    @Override
+    public Iterator<Course> listAllCourses() {
+        return courses.values().iterator();
+    }
 }

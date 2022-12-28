@@ -2,6 +2,7 @@ import jh.grades.manager.*;
 
 import java.util.Iterator;
 import java.util.Scanner;
+import static jh.grades.manager.Semesters.*;
 
 public class Main {
     // TODO: have a mini animation playing on the background (writing loading on the screen)
@@ -21,6 +22,7 @@ public class Main {
     }
 
     private static void top_board(Scanner in, GradesManager manager){
+        // TODO: top <init?> <end?> or better saying top range :)
         in.nextLine();
         Iterator<Student> students = manager.top();
         if(!students.hasNext())
@@ -90,8 +92,41 @@ public class Main {
         }
     }
 
+    private static String format_ord_num(int num){
+        switch (num){
+            case 1:
+                return "1st";
+            case 2:
+                return "2nd";
+            default:
+                return num + "th";
+        }
+    }
     private static void print_courses(Scanner in, GradesManager manager){
         in.nextLine();
+        // TODO: print courses by year and by semester
+        Iterator<Course> courses = manager.listAllCourses();
+
+        if(!courses.hasNext())
+            System.out.println("No courses");
+        else{
+            while(courses.hasNext()){
+                Course cs = courses.next();
+                System.out.printf("# %s (%s)\n", cs.id(), cs.name()); // heading
+                System.out.printf("credits: %d\n", cs.credits());
+                System.out.printf("period: %s year - ", format_ord_num(cs.year()));
+
+                Semesters sem = cs.semester();
+                if(sem == THIRD_TRIMESTER)
+                    System.out.println("3rd trimester");
+                else
+                    System.out.println(format_ord_num(sem.getId()) + " semester");
+
+
+                System.out.println();
+            }
+        }
+
         // try to print the courses by year and by semester
         // then by id number
     }

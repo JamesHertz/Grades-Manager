@@ -1,9 +1,9 @@
 package jh.grades.uploader;
 
-public class UrlInfo extends UploadInfo {
+public class UrlUploadInfo extends UploadInfo {
 
     // TODO: complete this class :)
-    public UrlInfo(String course_id) {
+    public UrlUploadInfo(String course_id) {
         super(course_id);
     }
 }

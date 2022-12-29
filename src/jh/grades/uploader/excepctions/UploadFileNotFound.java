@@ -4,6 +4,7 @@ public class UploadFileNotFound extends UploadException{
     private final String filename;
 
     public UploadFileNotFound(String filename){
+        super();
         this.filename = filename;
     }
 

@@ -63,11 +63,12 @@ public class MyManager implements GradesManager{
                 smt.setInt(1, student_number);
                 ResultSet res = smt.executeQuery();
                 List<Enrollment> enrolls = new LinkedList<>();
+                Student student = students.get(student_number); // the student :)
 
                 while(res.next()){
                     String cs_id = res.getString(1);
                     enrolls.add(new SimpleEnrollment(
-                            students.get(student_number),
+                            student,
                             courses.get(cs_id),
                             res.getFloat(2)
                     ));

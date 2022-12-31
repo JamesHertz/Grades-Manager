@@ -8,6 +8,7 @@ import java.util.Scanner;
 import static jh.grades.manager.Semesters.*;
 
 public class Main {
+    // TODO: go to google and rethink the way you will be getting the input.
     // TODO: have a mini animation playing on the background (writing loading on the screen)
     //Fist Message
     private static final String INIT_MESSAGE = "By ©James Hertz\nWelcome to Grades Manager\n";
@@ -155,6 +156,14 @@ public class Main {
         return Integer.parseInt(in.nextLine());
     }
 
+
+    private static CourseInfo get_courseInfo(Scanner in){
+        System.out.println("name: ");
+        System.out.println("semester: ");
+        System.out.println("year: ");
+        System.out.println("credits: ");
+        return null;
+    }
     private static void upload_enrolls(Scanner in, GradesManager manager){
         String course_id = in.nextLine().trim();
 
@@ -179,14 +188,13 @@ public class Main {
         // todo: should I stop and complete my framework??
         if(manager.getCourse(course_id) == null){
             System.out.println("Course doesn't exist.");
+            System.out.println("----------------------------------------------");
             System.out.println("Adding course ... Fill the course info below:");
+            System.out.println("----------------------------------------------");
 
-            System.out.println("name: ");
-            System.out.println("semester: ");
-            System.out.println("year: ");
-            System.out.println("credits: ");
-
-            up_info.setCourseInfo(null);
+            CourseInfo cs_info = get_courseInfo(in);
+            if(cs_info == null) return;
+            up_info.setCourseInfo(cs_info);
         }
         System.out.println("Uploading the files!!");
         // done :)

@@ -1,5 +1,9 @@
 import jh.grades.manager.*;
+import jh.grades.uploader.CourseInfo;
+import jh.grades.uploader.FileUploadInfo;
+import jh.grades.uploader.UploadInfo;
 
+import javax.sound.midi.Soundbank;
 import java.util.Iterator;
 import java.util.Scanner;
 import static jh.grades.manager.Semesters.*;
@@ -140,6 +144,47 @@ public class Main {
             -> But I somehow need to have another way of uploading the grades.
      */
 
+    private static final int FILE_UPLOAD = 0;
+    private static final int URL_UPLOAD = 1;
+
+    private static int choose_upload_method(Scanner in){
+        System.out.println("Choose upload type: ");
+        System.out.printf("%d - file upload\n", FILE_UPLOAD);
+        System.out.printf("%d - url upload\n", URL_UPLOAD);
+        return in.nextInt(); // TODO: work to be done later :)
+    }
+
+    private static void upload_enrolls(Scanner in, GradesManager manager){
+        String course_id = in.next();
+        CourseInfo c_info = null;
+
+       // if(manager.getCourse(course_id) == null){
+       //     // get's the course information
+       // }
+
+        UploadInfo up_info;
+
+        switch (choose_upload_method(in)) {
+            case FILE_UPLOAD -> {
+                System.out.println("filename: ");
+                String filename = in.nextLine().trim();
+                up_info = new FileUploadInfo(course_id, filename);
+            }
+            case URL_UPLOAD -> {
+                System.out.println("Not supported yet :(");
+                return;
+            }
+            default -> {
+                System.out.println("Invalid upload method");
+                return;
+            }
+        }
+        System.out.println("Uploading the files:");
+
+
+
+    }
+
     private static void run_commands(){
         Scanner in = new Scanner(System.in);
         GradesManager manager = new MyManager();
@@ -159,6 +204,9 @@ public class Main {
                     break;
                 case "courses":
                     print_courses(in, manager);
+                    break;
+                case "upload":
+                    upload_enrolls(in, manager);
                     break;
                 case QUIT:
                     System.out.println("bye bye");

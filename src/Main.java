@@ -151,22 +151,19 @@ public class Main {
         System.out.println("Choose upload type: ");
         System.out.printf("%d - file upload\n", FILE_UPLOAD);
         System.out.printf("%d - url upload\n", URL_UPLOAD);
-        return in.nextInt(); // TODO: work to be done later :)
+        System.out.print("your choice: ");
+
+        return Integer.parseInt(in.nextLine());
     }
 
     private static void upload_enrolls(Scanner in, GradesManager manager){
-        String course_id = in.next();
-        CourseInfo c_info = null;
-
-       // if(manager.getCourse(course_id) == null){
-       //     // get's the course information
-       // }
+        String course_id = in.nextLine().trim();
 
         UploadInfo up_info;
 
         switch (choose_upload_method(in)) {
             case FILE_UPLOAD -> {
-                System.out.println("filename: ");
+                System.out.print("filename: ");
                 String filename = in.nextLine().trim();
                 up_info = new FileUploadInfo(course_id, filename);
             }
@@ -179,10 +176,16 @@ public class Main {
                 return;
             }
         }
-        System.out.println("Uploading the files:");
 
+        if(manager.getCourse(course_id) == null){
+            System.out.println("Course doesn't exist.");
+            // todo: complete this
+            up_info.setCourseInfo(null);
+        }
+        System.out.println("Uploading the files!!");
 
-
+        // done :)
+        manager.uploadEnrolls(up_info);
     }
 
     private static void run_commands(){

@@ -126,25 +126,17 @@ public class MyManager implements GradesManager{
 
     @Override
     public void uploadEnrolls(UploadInfo info) {
-        // do fun stuffs :)
-        // I need a class on the uploader package
-        // that will just do a new thing for me :)
-        // first question: what should this class return me?
-        // answer: a class that will have the course id and all the records
-        // I need to upload to the database.
-        // how should I name this class?
-        // EnrollRecords
-        // second question: how should I name the class that will eventually
-        // parse the records and return to me?
-        // IDEAS: RecordParser, UploadManager, GradesUploader
-        // Upload .getRecords(
+        // TODO: complete this later
+    }
 
-        /*
-        UploaderManager{
+    @Override
+    public void uploadEnrolls(String filename) {
+        // TODO: complete this later
+    }
 
-        }
-        getRecords(UploadInfo info);
-         */
+    @Override
+    public Course getCourse(String course_id) {
+        return courses.get(course_id);
     }
 
     @Override

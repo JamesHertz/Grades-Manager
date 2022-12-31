@@ -8,15 +8,8 @@ import java.util.*;
 import java.util.List;
 
 public class GradesUploader {
-    private record Record(int st_number, String st_name, float grade) implements EnrollRecord{
-    }
 
-    private static String get_name(Scanner in) {
-        String name = "";
-        while (!in.hasNextFloat())
-            name = String.format("%s %s", name, in.next());
-        return name;
-    }
+    private record Record(int st_number, String st_name, float grade) implements EnrollRecord{ }
 
     private static List<EnrollRecord> getFileRecords(FileUploadInfo info) throws UploadException {
         List<EnrollRecord> records = new LinkedList<>();
@@ -65,6 +58,7 @@ public class GradesUploader {
         }
         return records;
     }
+
     public static Iterator<EnrollRecord> getRecords(UploadInfo info) throws UploadException {
         List<EnrollRecord> my_records;
         if(info instanceof FileUploadInfo){
@@ -74,10 +68,10 @@ public class GradesUploader {
             throw new UnsupportedOperationException("We don't support any UploadInfo but FileUploadInfo yet.");
         }
 
+        /*
         if(my_records.isEmpty()){
-            // TODO: exception, it should not be empty :)
-        }
-        // TODO: fun things :)
+            TODO: exception, it should not be empty :)
+        }*/
         return my_records.iterator();
     }
 }

@@ -7,40 +7,36 @@ import java.util.Iterator;
 public interface GradesManager {
 
     Student getStudent(int number);
+    Course getCourse(String course_id);
     Iterator<Student> top();
     Iterator<Student> listAllStudents();
     Iterator<Course> listAllCourses();
 
+    // will read json file and upload all the course in it.
+    void uploadEnrolls(String filename);
+
     void uploadEnrolls(UploadInfo info);
-    // later upload evals
+
     /*
-        How should the UploadInfo look like ?
-        // the name is still not good
+        Assumptions:
+            -> I only keep courses that has enrollments
+        how should I upload the courses?
+        At this point, it makes sense that the UploadInfo has the Course info.
+        But I want that such information be optional
 
-        // a decorator
+        I also want to be able to upload several courses using a json file.
+        Should I have other methods?
+        The option would be instead of loading enrolls let's load courses.
+        And there we would have the UploadInfo.
 
-        // I will need to find a better name for this
-        interface UploadInfo{
-            String course_id();
-        }
-        interface URL_INFO extends UploadInfo{
-            <all the attrs I will need>
-        }
+        I could instead of this have on the other hand upload the courses independently of the Enrolls.
 
-        interface FileInfo extends UploadInfo{
-            String filename();
-            // format? Is it worth?
-        }
+        I think that this makes sense. Having the course info in the UploadInfo.
+        But the question now is, what about me uploading several courses?
 
-        // for future
-        interface EvalInfo extends UploadInfo{
-            String evalID();
-        }
+        I think that I should have one this method.
+        Now let's just think of how this can work out.
+
+        How should I change UploadInfo.
      */
-
-    // methods to upload enrolls
-    // question which one is better?
-    // how can I make the uniform and avoid a mess?
-    // void upload_enrolls(String file_name);
-    // void upload_eval(Record[] records, String course_id, EvalType type);
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 public class GradesUploader {
 
-    private record Record(int st_number, String st_name, float grade) implements EnrollRecord{ }
+//    private record Record(int st_number, String st_name, float grade) implements EnrollRecord{ }
 
     private static List<EnrollRecord> getFileRecords(FileUploadInfo info) throws UploadException {
         List<EnrollRecord> records = new LinkedList<>();
@@ -44,7 +44,7 @@ public class GradesUploader {
                     throw new InvalidGradeException(line, 1, grade_str);
                 }
 
-                records.add(new Record(
+                records.add(new EnrollRecord(
                         number,
                         name == null ? null: name.toString(),
                         grade

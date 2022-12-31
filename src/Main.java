@@ -3,7 +3,6 @@ import jh.grades.uploader.CourseInfo;
 import jh.grades.uploader.FileUploadInfo;
 import jh.grades.uploader.UploadInfo;
 
-import javax.sound.midi.Soundbank;
 import java.util.Iterator;
 import java.util.Scanner;
 import static jh.grades.manager.Semesters.*;
@@ -177,13 +176,19 @@ public class Main {
             }
         }
 
+        // todo: should I stop and complete my framework??
         if(manager.getCourse(course_id) == null){
             System.out.println("Course doesn't exist.");
-            // todo: complete this
+            System.out.println("Adding course ... Fill the course info below:");
+
+            System.out.println("name: ");
+            System.out.println("semester: ");
+            System.out.println("year: ");
+            System.out.println("credits: ");
+
             up_info.setCourseInfo(null);
         }
         System.out.println("Uploading the files!!");
-
         // done :)
         manager.uploadEnrolls(up_info);
     }
@@ -195,28 +200,17 @@ public class Main {
         do{
             System.out.print(PROMPT);
             cmd = in.next(); // do later
-            switch (cmd){
-                case LIST_STUDENTS:
-                    list_students(in, manager);
-                    break;
-                case TOP:
-                    top_board(in, manager);
-                    break;
-                case "enrolls":
-                    print_enrolls(in, manager);
-                    break;
-                case "courses":
-                    print_courses(in, manager);
-                    break;
-                case "upload":
-                    upload_enrolls(in, manager);
-                    break;
-                case QUIT:
-                    System.out.println("bye bye");
-                    break;
-                default:
+            switch (cmd) {
+                case LIST_STUDENTS -> list_students(in, manager);
+                case TOP -> top_board(in, manager);
+                case "enrolls" -> print_enrolls(in, manager);
+                case "courses" -> print_courses(in, manager);
+                case "upload" -> upload_enrolls(in, manager);
+                case QUIT -> System.out.println("bye bye");
+                default -> {
                     System.out.println("Unknown command: " + cmd);
                     in.nextLine();
+                }
             }
         }while (!cmd.equals(QUIT));
     }

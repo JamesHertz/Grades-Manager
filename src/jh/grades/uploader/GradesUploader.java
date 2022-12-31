@@ -1,8 +1,6 @@
 package jh.grades.uploader;
 
-import jh.grades.uploader.excepctions.InvalidLineException;
-import jh.grades.uploader.excepctions.UploadException;
-import jh.grades.uploader.excepctions.UploadFileNotFound;
+import jh.grades.uploader.excepctions.*;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -17,19 +15,48 @@ public class GradesUploader {
             name = String.format("%s %s", name, in.next());
         return name;
     }
-    // TODO: look at the return type :) - DONE :)
-    // think return a list?
+
     private static List<EnrollRecord> getFileRecords(FileUploadInfo info) throws UploadException {
         List<EnrollRecord> records = new LinkedList<>();
         try(
                 Scanner in = new Scanner(new FileReader(info.getFilename()));
         ){
+            int lineNumber = 1;
             while(in.hasNext()){
                 String line = in.nextLine();
-                // int number = in.nextInt();
-                // String name = get_name(in);
-                // float grade = in.nextFloat();
-                records.add(null); // TODO.
+                String[] res = line.trim().split("\\s+");
+
+                // TODO: should I have an exception if there is only one word in the string??
+
+                String number_str = res[0];
+                String grade_str = res[ res.length - 1 ];
+
+                int number; float grade; StringBuilder name = null;
+
+                try{
+                    number = Integer.parseInt(number_str);
+                }catch (NumberFormatException e){
+                    throw new InvalidNumberException(line, 1, number_str);
+                }
+
+                for(int i = 1; i < res.length- 1; i++){
+                    if(name == null) name = new StringBuilder(res[i]);
+                    else name.append(" ").append(res[i]);
+                }
+
+                try{
+                    grade = Float.parseFloat(grade_str);
+                }catch (NumberFormatException e){
+                    throw new InvalidGradeException(line, 1, grade_str);
+                }
+
+                records.add(new Record(
+                        number,
+                        name == null ? null: name.toString(),
+                        grade
+                ));
+
+               lineNumber++;
             }
 
         }catch (FileNotFoundException e){
@@ -38,48 +65,18 @@ public class GradesUploader {
         return records;
     }
     public static Iterator<EnrollRecord> getRecords(UploadInfo info) throws UploadException {
-        List<EnrollRecord> myrecords;
+        List<EnrollRecord> my_records;
         if(info instanceof FileUploadInfo){
-            myrecords = getFileRecords((FileUploadInfo) info);
+            my_records = getFileRecords((FileUploadInfo) info);
         }else{ // info instanceof UrlUploadInfo
             // not supported yet :)
             throw new UnsupportedOperationException("We don't support any UploadInfo but FileUploadInfo yet.");
         }
-        if(myrecords.isEmpty()){
+
+        if(my_records.isEmpty()){
             // TODO: exception, it should not be empty :)
         }
         // TODO: fun things :)
-        return myrecords.iterator();
-    }
-    // a class main to test this thing :)
-    private static void parseLine(String line) throws InvalidLineException {
-        try{
-            String[] res = line.trim().split("\\s{1,}");
-            int length = res.length;
-            int number = Integer.parseInt(res[0]);
-            String name = null;
-            for(int i = 1; i < length - 1; i++){
-                if(name == null) name = res[i];
-                else name += " " + res[i];
-            }
-            float grade = Float.parseFloat(res[length - 1]);
-
-            System.out.println("number = " + number);
-            System.out.println("name = " + name);
-            System.out.println("grade = " + grade);
-        }catch (NumberFormatException e){
-            throw new InvalidLineException(line, 0);
-        }
-
-
-    }
-    public static void main(String[] args) {
-        String line = "61177 James Hertz Gomes Furtado 10.0";
-        try {
-            parseLine(line);
-        } catch (InvalidLineException e) {
-            System.out.println("line-number: " + e.getLineNumber());
-            System.out.println("line: = " + e.getLine());
-        }
+        return my_records.iterator();
     }
 }

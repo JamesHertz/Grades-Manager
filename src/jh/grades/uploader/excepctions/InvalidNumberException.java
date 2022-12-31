@@ -12,4 +12,9 @@ public class InvalidNumberException extends InvalidLineException{
     public String getNumber(){
         return this.number;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + String.format(" : Invalid number '%s'", number);
+    }
 }

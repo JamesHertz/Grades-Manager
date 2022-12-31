@@ -1,8 +1,8 @@
 package jh.grades.uploader;
 
-public interface EnrollRecord {
-    // TODO: rethink about the methods names
-    int student_number();
-    String student_name();
+public interface  EnrollRecord {
+    int st_number();
+    String st_name();
+
     float grade();
 }

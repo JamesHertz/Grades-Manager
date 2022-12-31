@@ -8,6 +8,8 @@ import java.util.*;
 import java.util.List;
 
 public class GradesUploader {
+    private record Record(int st_number, String st_name, float grade) implements EnrollRecord{
+    }
 
     private static String get_name(Scanner in) {
         String name = "";
@@ -27,7 +29,6 @@ public class GradesUploader {
                 String[] res = line.trim().split("\\s+");
 
                 // TODO: should I have an exception if there is only one word in the string??
-
                 String number_str = res[0];
                 String grade_str = res[ res.length - 1 ];
 

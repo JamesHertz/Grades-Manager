@@ -3,39 +3,44 @@ import jh.grades.uploader.CourseInfo;
 import jh.grades.uploader.FileUploadInfo;
 import jh.grades.uploader.UploadInfo;
 
+import jh.projects.cliparser.cliApp.CliApp;
+import jh.projects.cliparser.cliApp.SimpleCliApp;
+import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
+import jh.projects.cliparser.cliApp.api.CliAPI;
+import jh.projects.cliparser.cliApp.api.CliTable;
+import jh.projects.cliparser.cliApp.listeners.CliRunListener;
+
 import java.util.Iterator;
 import java.util.Scanner;
 import static jh.grades.manager.Semesters.*;
+import static java.lang.String.format;
 
-public class Main {
-    // TODO: go to google and rethink the way you will be getting the input.
+public class Main implements CliRunListener {
     // TODO: have a mini animation playing on the background (writing loading on the screen)
-    //Fist Message
     private static final String INIT_MESSAGE = "By ©James Hertz\nWelcome to Grades Manager\n";
 
-    // adhoc commands
-    private static final String LIST_STUDENTS = "students";
-    private static final String TOP = "top";
-    public static final String QUIT = "quit";
+    private GradesManager manager;
 
-    public static final String PROMPT = ">> ";
-
-    public static void main(String[] args) {
+    @Override
+    public void onRun(CliAPI api) {
         System.out.println(INIT_MESSAGE);
-        run_commands();
+        this.manager = new MyManager();
     }
 
-    private static void top_board(Scanner in, GradesManager manager){
-        // TODO: top <init?> <end?> or better saying top range :)
-        in.nextLine();
+    @CliAppCommand(
+            key = "top",
+            desc = "lists the students by sorted by credits and then by average grade"
+    )
+    public void top_board(CliAPI api){
         Iterator<Student> students = manager.top();
         if(!students.hasNext())
             System.out.println("No students!");
-        else {
-            // TODO: check this thing out later
-            System.out.printf("%5s %5s  %-6s  %-50s %-7s %s\n", "COUNT", "RANK", "NUMBER", "NAME", "GRADE", "CREDITS");
+        else{
             int count =1, rank = 1;
             Float lastGrade = null;
+            String[] headers = {"COUNT", "RANK", "NUMBER", "NAME", "GRADE", "CREDITS"};
+            CliTable table = api.createTable(headers);
+
             while(students.hasNext()){
                 Student st = students.next();
 
@@ -44,39 +49,38 @@ public class Main {
                     lastGrade = st.averageGrade();
                     rank++;
                 }
-                // TODO: automatize this...
-                System.out.printf("%5d %4d°  %6d  %-50s %5.2f - %3d\n", count, rank, st.number(), st.name(), st.averageGrade(), st.totalCredits());
-                count++;
-
+                table.add(format("%3d", count++), format("%3d°", rank), st.number(),
+                        st.name(), st.averageGrade(), st.totalCredits());
             }
-        }
 
+            table.print();
+        }
     }
 
-    private static void list_students(Scanner in, GradesManager manager){
-        in.nextLine();
+    @CliAppCommand(
+            key = "students",
+            desc = "lists all students"
+    )
+    public void list_students(CliAPI api){
         Iterator<Student> students = manager.listAllStudents();
         if(!students.hasNext())
             System.out.println("No students!");
         else {
-            System.out.println("NUMBER  NAME");
+            CliTable table = api.createTable(new String[]{ "NUMBER", "NAME"});
             while(students.hasNext()){
                 Student st = students.next();
-                System.out.printf("%6d  %s\n", st.number(), st.name());
+                table.add(st.number(), st.name());
             }
+            table.print();
         }
     }
 
-    private static void print_enrolls(Scanner in, GradesManager manager){
-        int number = in.nextInt();
-        in.nextLine();
-
-        if(number < 0){
-            System.out.println("Invalid number, it should be greater than 0");
-            return;
-        }
-
-        Student st = manager.getStudent(number);
+    @CliAppCommand(
+            key = "enrolls",
+            desc = "lists all the course that the given student is enrolled in"
+    )
+    public void print_enrolls(int student_number){
+        Student st = manager.getStudent(student_number);
         if(st == null) {
             System.out.println("No such student");
         }else{
@@ -96,19 +100,11 @@ public class Main {
         }
     }
 
-    private static String format_ord_num(int num){
-        switch (num){
-            case 1:
-                return "1st";
-            case 2:
-                return "2nd";
-            default:
-                return num + "th";
-        }
-    }
-    private static void print_courses(Scanner in, GradesManager manager){
-        in.nextLine();
-        // TODO: print courses by year and by semester
+    @CliAppCommand(
+            key = "courses",
+            desc = "lists all courses"
+    )
+    public void print_courses(){
         Iterator<Course> courses = manager.listAllCourses();
 
         if(!courses.hasNext())
@@ -133,6 +129,13 @@ public class Main {
         // try to print the courses by year and by semester
         // then by id number
     }
+     private String format_ord_num(int num){
+        return switch (num) {
+            case 1 -> "1st";
+            case 2 -> "2nd";
+            default -> num + "th";
+        };
+    }
     /*
         How to insert data into my program?
         Which commands should I have?
@@ -143,6 +146,7 @@ public class Main {
             -> Well I am just supporting final grades right now.
             -> But I somehow need to have another way of uploading the grades.
      */
+
 
     private static final int FILE_UPLOAD = 0;
     private static final int URL_UPLOAD = 1;
@@ -164,6 +168,8 @@ public class Main {
         System.out.println("credits: ");
         return null;
     }
+
+    // upload command :)
     private static void upload_enrolls(Scanner in, GradesManager manager){
         String course_id = in.nextLine().trim();
 
@@ -201,25 +207,8 @@ public class Main {
         manager.uploadEnrolls(up_info);
     }
 
-    private static void run_commands(){
-        Scanner in = new Scanner(System.in);
-        GradesManager manager = new MyManager();
-        String cmd;
-        do{
-            System.out.print(PROMPT);
-            cmd = in.next(); // do later
-            switch (cmd) {
-                case LIST_STUDENTS -> list_students(in, manager);
-                case TOP -> top_board(in, manager);
-                case "enrolls" -> print_enrolls(in, manager);
-                case "courses" -> print_courses(in, manager);
-                case "upload" -> upload_enrolls(in, manager);
-                case QUIT -> System.out.println("bye bye");
-                default -> {
-                    System.out.println("Unknown command: " + cmd);
-                    in.nextLine();
-                }
-            }
-        }while (!cmd.equals(QUIT));
+    public static void main(String[] args) {
+        CliApp app = new SimpleCliApp(new Main());
+        app.run();
     }
 }

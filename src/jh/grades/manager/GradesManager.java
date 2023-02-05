@@ -13,7 +13,7 @@ public interface GradesManager {
     Iterator<Course> listAllCourses();
 
     // will read json file and upload all the course in it.
-    void uploadEnrolls(String filename);
+    void uploadEnrolls(String filename); // TODO: delete
 
     void uploadEnrolls(UploadInfo info);
 

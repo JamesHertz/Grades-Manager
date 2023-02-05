@@ -1,4 +1,4 @@
-package jh.grades.manager;
+package jh.projects.grades.manager;
 
 public interface Enrollment {
     // TODO: look at this later

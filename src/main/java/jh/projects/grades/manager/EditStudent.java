@@ -1,4 +1,4 @@
-package jh.grades.manager;
+package jh.projects.grades.manager;
 
 interface EditStudent extends Student{
     EditStudent setAvgGrade(float grade);

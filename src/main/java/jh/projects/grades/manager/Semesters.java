@@ -1,4 +1,4 @@
-package jh.grades.manager;
+package jh.projects.grades.manager;
 
 public enum Semesters {
     FIRST(1), SECOND(2), THIRD_TRIMESTER(0);

@@ -1,4 +1,4 @@
-package jh.grades.manager;
+package jh.projects.grades.manager;
 
 public class ColleagueCourse implements Course{
 

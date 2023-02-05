@@ -1,11 +1,13 @@
-package jh.grades.manager;
+package jh.projects.grades.manager;
+
+import jh.projects.grades.uploader.UploadInfo;
 
 import java.sql.*;
 import java.text.Collator;
 import java.util.*;
 
-import static jh.grades.manager.DataBaseConnection.*;
-import static jh.grades.manager.EnrollsProxy.EMPTY_ENROLLS;
+import static jh.projects.grades.manager.DataBaseConnection.*;
+import static jh.projects.grades.manager.EnrollsProxy.EMPTY_ENROLLS;
 
 // TODO: finish course thing and start working on the inserting info commands.
 public class MyManager implements GradesManager{
@@ -121,6 +123,21 @@ public class MyManager implements GradesManager{
         }catch (Exception e){
             e.printStackTrace(); // TODO: what to do??
         }
+    }
+
+    @Override
+    public void uploadEnrolls(UploadInfo info) {
+        // TODO: complete this later
+    }
+
+    @Override
+    public void uploadEnrolls(String filename) {
+        // TODO: complete this later
+    }
+
+    @Override
+    public Course getCourse(String course_id) {
+        return courses.get(course_id);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package jh.projects.grades.uploader;
 
+import jh.projects.grades.manager.Semesters;
 import jh.projects.grades.uploader.excepctions.*;
 import jh.projects.grades.uploader.excepctions.InvalidGradeException;
 import jh.projects.grades.uploader.excepctions.InvalidNumberException;
@@ -77,5 +78,9 @@ public class GradesUploader {
             TODO: exception, it should not be empty :)
         }*/
         return my_records.iterator();
+    }
+
+    public static CourseInfo createInfo(String name, Semesters semester, int year, int credits){
+        return new CourseInfo(name, semester, year, credits);
     }
 }

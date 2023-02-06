@@ -3,8 +3,12 @@ package jh.projects.grades;
 import jh.projects.grades.manager.*;
 import jh.projects.grades.uploader.CourseInfo;
 import jh.projects.grades.uploader.FileUploadInfo;
+import jh.projects.grades.uploader.GradesUploader;
 import jh.projects.grades.uploader.UploadInfo;
 
+// cli-parser imports
+import jh.projects.cliparser.cliApp.api.form.CliForm;
+import jh.projects.cliparser.cliApp.api.form.CliFormValue;
 import jh.projects.cliparser.cliApp.CliApp;
 import jh.projects.cliparser.cliApp.SimpleCliApp;
 import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
@@ -12,11 +16,13 @@ import jh.projects.cliparser.cliApp.api.CliAPI;
 import jh.projects.cliparser.cliApp.api.table.CliTable;
 import jh.projects.cliparser.cliApp.listeners.CliRunListener;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Scanner;
 
 import static java.lang.String.format;
 import static jh.projects.grades.manager.Semesters.*;
+import static jh.projects.cliparser.parser.DataType.*;
 
 public class Main implements CliRunListener {
     // TODO: have a mini animation playing on the background (writing loading on the screen)
@@ -136,15 +142,54 @@ public class Main implements CliRunListener {
     @CliAppCommand(
             desc = "uploads enrollments to Grades Manager"
     )
-    public void upload(String course_id){
+    public void upload(CliAPI api, String course_id){
        Course cs = manager.getCourse(course_id.toUpperCase());
+       CourseInfo info;
 
        if(cs != null)
            System.out.printf("Course id '%s' already exists as '%s'\n", cs.id(), cs.name());
-       else {
-           // ask for info
+       else if( (info = getCourseInfo(api)) != null) {
+           System.out.println("adding things :)");
        }
     }
+
+    private CourseInfo getCourseInfo(CliAPI api){
+       CliForm form = api.createForm()
+               .addField("Course Name", STRING)
+               .addField("Semester", INTEGER)
+               .addField("Year", INTEGER)
+               .addField("Credits", INTEGER);
+
+       CliFormValue[] values = form.run();
+
+       if(values == null){
+           form.printError();
+           return null;
+       }
+
+       String name = values[0].toString();
+       Semesters sem = Semesters.getSemester(values[1].toInt());
+       int year = values[2].toInt();
+       int credits = values[3].toInt();
+
+       if(sem == null){
+           System.out.println("Invalid semester: " + values[1]);
+           return null;
+       }
+
+       if(year <= 0){
+           System.out.println("Invalid year: " + year);
+           return null;
+       }
+
+       if(credits <= 0){
+           System.out.println("Invalid credits: " + credits);
+           return null;
+       }
+
+       return GradesUploader.createInfo(name, sem, year, credits);
+}
+
 
      private String format_ord_num(int num){
         return switch (num) {
@@ -178,6 +223,7 @@ public class Main implements CliRunListener {
     }
 
 
+    /*
     private static CourseInfo get_courseInfo(Scanner in){
         System.out.println("name: ");
         System.out.println("semester: ");
@@ -223,7 +269,7 @@ public class Main implements CliRunListener {
         // done :)
         manager.uploadEnrolls(up_info);
     }
-
+     */
     public static void main(String[] args) {
         CliApp app = new SimpleCliApp(new Main());
         app.run();

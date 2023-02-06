@@ -2,9 +2,7 @@ package jh.projects.grades;
 
 import jh.projects.grades.manager.*;
 import jh.projects.grades.uploader.CourseInfo;
-import jh.projects.grades.uploader.FileUploadInfo;
 import jh.projects.grades.uploader.GradesUploader;
-import jh.projects.grades.uploader.UploadInfo;
 
 // cli-parser imports
 import jh.projects.cliparser.cliApp.api.form.CliForm;
@@ -188,7 +186,7 @@ public class Main implements CliRunListener {
        }
 
        return GradesUploader.createInfo(name, sem, year, credits);
-}
+ }
 
 
      private String format_ord_num(int num){
@@ -209,67 +207,6 @@ public class Main implements CliRunListener {
             -> But I somehow need to have another way of uploading the grades.
      */
 
-
-    private static final int FILE_UPLOAD = 0;
-    private static final int URL_UPLOAD = 1;
-
-    private static int choose_upload_method(Scanner in){
-        System.out.println("Choose upload type: ");
-        System.out.printf("%d - file upload\n", FILE_UPLOAD);
-        System.out.printf("%d - url upload\n", URL_UPLOAD);
-        System.out.print("your choice: ");
-
-        return Integer.parseInt(in.nextLine());
-    }
-
-
-    /*
-    private static CourseInfo get_courseInfo(Scanner in){
-        System.out.println("name: ");
-        System.out.println("semester: ");
-        System.out.println("year: ");
-        System.out.println("credits: ");
-        return null;
-    }
-
-    // upload command :)
-    private static void upload_enrolls(Scanner in, GradesManager manager){
-        String course_id = in.nextLine().trim();
-
-        UploadInfo up_info;
-
-        switch (choose_upload_method(in)) {
-            case FILE_UPLOAD -> {
-                System.out.print("filename: ");
-                String filename = in.nextLine().trim();
-                up_info = new FileUploadInfo(course_id, filename);
-            }
-            case URL_UPLOAD -> {
-                System.out.println("Not supported yet :(");
-                return;
-            }
-            default -> {
-                System.out.println("Invalid upload method");
-                return;
-            }
-        }
-
-        // todo: should I stop and complete my framework??
-        if(manager.getCourse(course_id) == null){
-            System.out.println("Course doesn't exist.");
-            System.out.println("----------------------------------------------");
-            System.out.println("Adding course ... Fill the course info below:");
-            System.out.println("----------------------------------------------");
-
-            CourseInfo cs_info = get_courseInfo(in);
-            if(cs_info == null) return;
-            up_info.setCourseInfo(cs_info);
-        }
-        System.out.println("Uploading the files!!");
-        // done :)
-        manager.uploadEnrolls(up_info);
-    }
-     */
     public static void main(String[] args) {
         CliApp app = new SimpleCliApp(new Main());
         app.run();

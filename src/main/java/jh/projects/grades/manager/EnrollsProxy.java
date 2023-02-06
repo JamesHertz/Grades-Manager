@@ -6,7 +6,7 @@ import java.util.Iterator;
 @FunctionalInterface
 public interface EnrollsProxy {
 
-    static EnrollsProxy EMPTY_ENROLLS = Collections::emptyIterator;
+    EnrollsProxy EMPTY_ENROLLS = Collections::emptyIterator;
 
     Iterator<Enrollment> getEnrolls();
 }

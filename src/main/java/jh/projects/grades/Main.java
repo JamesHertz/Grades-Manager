@@ -9,7 +9,7 @@ import jh.projects.cliparser.cliApp.CliApp;
 import jh.projects.cliparser.cliApp.SimpleCliApp;
 import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
 import jh.projects.cliparser.cliApp.api.CliAPI;
-import jh.projects.cliparser.cliApp.api.CliTable;
+import jh.projects.cliparser.cliApp.api.table.CliTable;
 import jh.projects.cliparser.cliApp.listeners.CliRunListener;
 
 import java.util.Iterator;
@@ -53,7 +53,7 @@ public class Main implements CliRunListener {
                     rank++;
                 }
                 table.add(format("%3d", count++), format("%3d°", rank), st.number(),
-                        st.name(), st.averageGrade(), st.totalCredits());
+                        st.name(), format("%.2f", st.averageGrade()), format("%5d", st.totalCredits()));
             }
 
             table.print();
@@ -137,7 +137,13 @@ public class Main implements CliRunListener {
             desc = "uploads enrollments to Grades Manager"
     )
     public void upload(String course_id){
-        System.out.println("Hi there you are uploading :) to: " + course_id);
+       Course cs = manager.getCourse(course_id.toUpperCase());
+
+       if(cs != null)
+           System.out.printf("Course id '%s' already exists as '%s'\n", cs.id(), cs.name());
+       else {
+           // ask for info
+       }
     }
 
      private String format_ord_num(int num){

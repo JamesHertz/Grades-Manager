@@ -132,8 +132,12 @@ public class Main implements CliRunListener {
         // try to print the courses by year and by semester
         // then by id number
     }
-    public void upload(){
-        System.out.println("Hi there you are uploading :)");
+
+    @CliAppCommand(
+            desc = "uploads enrollments to Grades Manager"
+    )
+    public void upload(String course_id){
+        System.out.println("Hi there you are uploading :) to: " + course_id);
     }
 
      private String format_ord_num(int num){

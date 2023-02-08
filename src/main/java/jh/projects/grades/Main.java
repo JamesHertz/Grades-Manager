@@ -1,5 +1,7 @@
 package jh.projects.grades;
 
+import jh.projects.grades.database.DataBase;
+import jh.projects.grades.database.GMDataBase;
 import jh.projects.grades.manager.*;
 import jh.projects.grades.uploader.CourseInfo;
 import jh.projects.grades.uploader.GradesUploader;
@@ -13,6 +15,9 @@ import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
 import jh.projects.cliparser.cliApp.api.CliAPI;
 import jh.projects.cliparser.cliApp.api.table.CliTable;
 import jh.projects.cliparser.cliApp.listeners.CliRunListener;
+import jh.projects.grades.uploader.UrlUploadInfo;
+import jh.projects.grades.uploader.excepctions.UploadException;
+import jh.projects.grades.uploader.excepctions.UploadFileNotFound;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -104,6 +109,7 @@ public class Main implements CliRunListener {
                     System.out.printf("final-grade: %.2f\n\n", aux.grade());
                 }
             }
+            // have a command named student that prints statistics about him
         }
     }
 
@@ -137,20 +143,37 @@ public class Main implements CliRunListener {
         // then by id number
     }
 
-    @CliAppCommand(
-            desc = "uploads enrollments to Grades Manager"
-    )
-    public void upload(CliAPI api, String course_id){
-       Course cs = manager.getCourse(course_id.toUpperCase());
-       CourseInfo info;
+//    @CliAppCommand(
+//            desc = "uploads enrollments to Grades Manager"
+//    )
+    public void upload(CliAPI api, String filename){ // this is fun :)
+       // Course cs = manager.getCourse(course_id.toUpperCase());
+       //FileUploadInfo up = new FileUploadInfo(course_id.toUpperCase(), new String[]{base, other});
+       //up.setCourseInfo(
+       //      new CourseInfo("MyCourse", FIRST, 3, 9)
+       //);
 
+       // try {
+       //     manager.uploadEnrolls(up);
+       // } catch (UploadFileNotFound e){
+       //     System.out.printf("file '%s' not found\n", e.getFilename());
+       // } catch (UploadException e) {
+       //     System.out.println(e.getMessage());
+       // }
+
+       /*
        if(cs != null)
            System.out.printf("Course id '%s' already exists as '%s'\n", cs.id(), cs.name());
        else if( (info = getCourseInfo(api)) != null) {
            System.out.println("adding things :)");
+           // TODO: ask for the files.
        }
+        */
     }
 
+    // api.prompt(String, type1, type2, type3); -> return next string
+    // api.prompt();
+    // api.prompt(type 1, type2) -> parses the line and returns an a
     private CourseInfo getCourseInfo(CliAPI api){
        CliForm form = api.createForm()
                .addField("Course Name", STRING)
@@ -186,8 +209,7 @@ public class Main implements CliRunListener {
        }
 
        return GradesUploader.createInfo(name, sem, year, credits);
- }
-
+    }
 
      private String format_ord_num(int num){
         return switch (num) {
@@ -205,6 +227,81 @@ public class Main implements CliRunListener {
             -> But that works just for final grades.
             -> Well I am just supporting final grades right now.
             -> But I somehow need to have another way of uploading the grades.
+     */
+    /*
+     // CLASSS DONE TO TEST THE DATA_BAASE MODULE
+    static class SimpleDBInter implements CliRunListener{
+        DataBase db;
+        @Override
+        public void onRun(CliAPI cliAPI) {
+            System.out.println("Creating db...");
+            db = new GMDataBase("dbs/file.db");
+        }
+        @CliAppCommand
+        public void listStudents(CliAPI api){
+            Iterator<DataBase.RawStudent> st = db.getAllStudents();
+            if(!st.hasNext())
+                System.out.println("No students :(");
+            else{
+                CliTable table = api.createTable(new String[]{"NUMBER", "NAME", "AVG-GRADE", "CREDITS"});
+                while(st.hasNext()){
+                    var aux = st.next();
+                    table.add(aux.number(), aux.name(), format("%.2f", aux.avgGrade()), aux.number());
+                }
+                table.print();
+            }
+        }
+        @CliAppCommand
+        public void listCourse(CliAPI api){
+            Iterator<DataBase.RawCourse> cs = db.getAllCourses();
+            if(!cs.hasNext())
+                System.out.println("No course!!");
+            else {
+                CliTable table = api.createTable(new String[]{"COURSE-ID", "CREDITS"});
+                while(cs.hasNext()){
+                    var aux = cs.next();
+                    table.add(aux.id(), aux.credits());
+                }
+                table.print();
+            }
+        }
+        @CliAppCommand
+        public void studentEnrolls(CliAPI api, int studentNumber){
+            listEnrolls(api, db.getEnrolls(studentNumber));
+        }
+        @CliAppCommand
+        public void courseEnrolls(CliAPI api, String courseID){
+           listEnrolls(api, db.getEnrolls(courseID));
+        }
+        private void listEnrolls(CliAPI api, Iterator<DataBase.RawEnroll> enrolls){
+            if(!enrolls.hasNext())
+                System.out.println("No enrolls :(");
+            else{
+                CliTable table = api.createTable(new String[]{"COURSE-ID", "STUDENT-NUMBER", "GRADE"});
+                while(enrolls.hasNext()){
+                    var aux = enrolls.next();
+                    table.add(aux.courseID(), aux.studentNumber(), aux.grade());
+                }
+                table.print();
+            }
+        }
+        @CliAppCommand
+        public void addStudent(int number, String name){
+            db.insertStudent(number, name);
+            System.out.println("Inserted!!!");
+        }
+        @CliAppCommand
+        public void addCourse(String courseID, int credits){
+            db.insertCourse(courseID, "", credits, 1, 1);
+            System.out.println("Inserted!!!");
+        }
+
+        @CliAppCommand
+        public void addEnroll(int studentNumber, String courseID, float grade){
+            db.insertEnroll(courseID, studentNumber, grade);
+            System.out.println("Inserted");
+        }
+    };
      */
 
     public static void main(String[] args) {

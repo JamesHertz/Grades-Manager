@@ -20,7 +20,7 @@ public class InvalidLineException extends UploadException{
     }
 
     @Override
-    public String toString() {
-        return String.format("Invalid line: \n%d: %s", lineNumber, line);
+    public String getMessage() {
+        return String.format("Error in line: %d: %s\n", lineNumber, line);
     }
 }

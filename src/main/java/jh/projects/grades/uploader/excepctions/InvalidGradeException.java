@@ -12,7 +12,7 @@ public class InvalidGradeException extends InvalidLineException{
     }
 
     @Override
-    public String toString() {
-        return super.toString() + String.format(" : Invalid grade '%s'", grade);
+    public String getMessage() {
+        return super.getMessage() + String.format("Invalid grade '%s'", grade);
     }
 }

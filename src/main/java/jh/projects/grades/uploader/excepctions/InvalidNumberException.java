@@ -14,7 +14,7 @@ public class InvalidNumberException extends InvalidLineException{
     }
 
     @Override
-    public String toString() {
-        return super.toString() + String.format(" : Invalid number '%s'", number);
+    public String getMessage() {
+        return super.getMessage() + String.format("Invalid student number '%s'", number);
     }
 }

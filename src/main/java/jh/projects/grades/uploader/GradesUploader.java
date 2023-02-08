@@ -7,6 +7,7 @@ import jh.projects.grades.uploader.excepctions.InvalidNumberException;
 import jh.projects.grades.uploader.excepctions.UploadException;
 import jh.projects.grades.uploader.excepctions.UploadFileNotFound;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
@@ -14,9 +15,7 @@ import java.util.List;
 
 public class GradesUploader {
 
-//    private record Record(int st_number, String st_name, float grade) implements EnrollRecord{ }
-
-    private static List<EnrollRecord> getFileRecords(FileUploadInfo info) throws UploadException {
+    private static Iterator<EnrollRecord> getFileRecords(FileUploadInfo info) throws UploadException {
         List<EnrollRecord> records = new LinkedList<>();
         try(
                 Scanner in = new Scanner(new FileReader(info.getFilename()));
@@ -55,21 +54,20 @@ public class GradesUploader {
                         grade
                 ));
 
-               lineNumber++;
+                lineNumber++;
             }
 
         }catch (FileNotFoundException e){
             throw new UploadFileNotFound(info.getFilename());
         }
-        return records;
+        return records.iterator();
     }
 
     public static Iterator<EnrollRecord> getRecords(UploadInfo info) throws UploadException {
-        List<EnrollRecord> my_records;
+        Iterator<EnrollRecord> my_records;
         if(info instanceof FileUploadInfo){
             my_records = getFileRecords((FileUploadInfo) info);
         }else{ // info instanceof UrlUploadInfo
-            // not supported yet :)
             throw new UnsupportedOperationException("We don't support any UploadInfo but FileUploadInfo yet.");
         }
 
@@ -77,7 +75,7 @@ public class GradesUploader {
         if(my_records.isEmpty()){
             TODO: exception, it should not be empty :)
         }*/
-        return my_records.iterator();
+        return my_records;
     }
 
     public static CourseInfo createInfo(String name, Semesters semester, int year, int credits){

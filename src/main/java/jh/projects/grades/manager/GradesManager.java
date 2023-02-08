@@ -1,6 +1,7 @@
 package jh.projects.grades.manager;
 
 import jh.projects.grades.uploader.UploadInfo;
+import jh.projects.grades.uploader.excepctions.UploadException;
 
 import java.util.Iterator;
 
@@ -13,9 +14,8 @@ public interface GradesManager {
     Iterator<Course> listAllCourses();
 
     // will read json file and upload all the course in it.
-    void uploadEnrolls(String filename); // TODO: delete
 
-    void uploadEnrolls(UploadInfo info);
+    void uploadEnrolls(UploadInfo info) throws UploadException;
 
     /*
         Assumptions:

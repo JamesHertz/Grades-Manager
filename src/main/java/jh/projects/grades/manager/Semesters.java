@@ -17,4 +17,9 @@ public enum Semesters {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return super.toString().toLowerCase();
+    }
 }

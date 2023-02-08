@@ -4,7 +4,7 @@ import jh.projects.grades.manager.Semesters;
 
 public record CourseInfo(
         String name,
-        Semesters semesters,
+        Semesters semester,
         int year,
         int credits
 ) {}

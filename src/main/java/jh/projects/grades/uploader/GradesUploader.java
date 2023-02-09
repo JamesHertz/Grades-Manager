@@ -1,84 +1,188 @@
 package jh.projects.grades.uploader;
 
-import jh.projects.grades.manager.Semesters;
-import jh.projects.grades.uploader.excepctions.*;
-import jh.projects.grades.uploader.excepctions.InvalidGradeException;
-import jh.projects.grades.uploader.excepctions.InvalidNumberException;
-import jh.projects.grades.uploader.excepctions.UploadException;
-import jh.projects.grades.uploader.excepctions.UploadFileNotFound;
+import static org.jsoup.Connection.*;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import static jh.projects.grades.uploader.GradesUploader.HttpValues.*;
+import jh.projects.grades.rawdata.StudentRecord;
 
 public class GradesUploader {
+    // values used in the Http Connection with CLIP.
+    // They vary from url query parameters and values to cookies names and urls
+    static class HttpValues{
+        // URL QUERY FIELDS AND COOKIE INFO USED TO GET COOKIE
+        static final String USERNAME_FIELD  = "identificador";
+        static final String PASSWORD_FIELD  = "senha";
+        static final String COOKIE_NAME     = "JServSessionIdroot1112";
+        static final String COOKIE_URL = "https://clip.fct.unl.pt/utente/eu";
 
-    private static Iterator<EnrollRecord> getFileRecords(FileUploadInfo info) throws UploadException {
-        List<EnrollRecord> records = new LinkedList<>();
-        try(
-                Scanner in = new Scanner(new FileReader(info.getFilename()));
-        ){
-            int lineNumber = 1;
-            while(in.hasNext()){
-                String line = in.nextLine();
-                String[] res = line.trim().split("\\s+");
+        // URL QUERY FIELDS VALUES AND URLS USED TO FETCH COURSES RESULTS:
 
-                // TODO: should I have an exception if there is only one word in the string??
-                String number_str = res[0];
-                String grade_str = res[ res.length - 1 ];
+        // URL USED TO GET THE RESULTS
+        static final String ENROLLS_BASE_URL = "https://clip.fct.unl.pt/utente/eu/aluno/ano_lectivo/unidades/unidade_curricular/actividade/resultados/pautas/por_curso";
 
-                int number; float grade; StringBuilder name = null;
+        // QUERY FIELDS
+        /*
+                CLIP-QUERY-PARS-INFO:
+                tipo_de_período_lectivo      :	s -> t (trimester)
+                tipo_de_avaliação_curricular :	a -> m (melhoria)
+                ano_lectivo                  :  <year>
+                período_lectivo              :	1  -> 2 (2nd)
+                aluno                        :	<student-number-id>
+                instituição                  :	<college>
+                unidade_curricular           :	<course-code>
+                curso                        :  472 (MIEI), 524 (LEI)
+        */
 
-                try{
-                    number = Integer.parseInt(number_str);
-                }catch (NumberFormatException e){
-                    throw new InvalidNumberException(line, 1, number_str);
-                }
+        static final String PERIOD_TYPE  = "tipo_de_período_lectivo";
+        static final String PERIOD       = "período_lectivo";
+        static final String EVAL_TYPE    = "tipo_de_avaliação_curricular";
+        static final String YEAR         = "ano_lectivo";
+        static final String NUMBER_ID    = "aluno";
+        static final String COLLEGE      = "instituição";
+        static final String COURSE_CODE  = "unidade_curricular";
+        static final String PROGRAM      = "curso";
 
-                for(int i = 1; i < res.length- 1; i++){
-                    if(name == null) name = new StringBuilder(res[i]);
-                    else name.append(" ").append(res[i]);
-                }
+        // PERIOD_TYPE values
+        static final String SEMESTER_PERIOD   = "s";
+        static final String TRIMESTER_PERIOD  = "t";
+        // EVAL_TYPE values
+        static final String NORMAL_EVAL       = "a";
+        static final String IMPROVED_EVAL     = "m";
+        // COLLEGE value
+        static final String MY_COLLEGE        = "97747";
+        // COURSE_CODE values
+        static final String[] TARGET_PROGRAMS = {"472", "524"};
 
-                try{
-                    grade = Float.parseFloat(grade_str);
-                }catch (NumberFormatException e){
-                    throw new InvalidGradeException(line, 1, grade_str);
-                }
+        // Year I started to have classes in college
+        static final int BASE_YEAR = 2020;
 
-                records.add(new EnrollRecord(
-                        number,
-                        name == null ? null: name.toString(),
-                        grade
-                ));
+        // encoding used to encode the url query parameters
+        static final String QUERY_ENCODING = "ISO-8859-1";
+    }
 
-                lineNumber++;
+    private static String getNumberID(Document doc){
+        Pattern p = Pattern.compile("aluno=(\\d+)");
+        for(Element el : doc.select("a")){
+            Matcher m  = p.matcher(el.attr("href"));
+            if(m.find()) return m.group(1);
+        }
+        return null;
+    }
+
+    public static ClipCredentials getStudentInfo(String username, String password){
+        try {
+            Connection.Response res = Jsoup.connect(HttpValues.COOKIE_URL)
+                    .data(HttpValues.USERNAME_FIELD, username)
+                    .data(HttpValues.PASSWORD_FIELD, password)
+                    .method(Method.POST)
+                    .execute();
+            String cookie = res.cookie(HttpValues.COOKIE_NAME);
+            String numberID = getNumberID(res.parse());
+            return new ClipCredentials(cookie, numberID);
+        } catch (IOException e) {}
+        return null;
+    }
+
+    public record RawCourse(int code, int semester, int year){};
+
+    public record ClipCredentials(String cookie, String numberID){};
+
+    private static int getValue(String value){
+        try{
+            return Integer.parseInt(value);
+        }catch (NumberFormatException e){
+            return 0;
+        }
+    }
+
+    private static Iterator<StudentRecord> parseRows(Document doc){
+        List<StudentRecord> data = new LinkedList<>();
+        for(Element el : doc.select("tr[align=left]")){
+            int number = 0, grade = 0; String name = "";
+            int idx = 0;
+            for(Element inner : el.getAllElements()){
+                if(idx == 1) number = getValue(inner.text());
+                else if(idx == 2) name = inner.text();
+                else grade = Math.max(grade, getValue(inner.text()));
+                ++idx;
+            }
+            data.add(new StudentRecord(number, name, grade));
+        }
+        return data.iterator();
+    }
+
+    public static Iterator<StudentRecord> getEnrolls(ClipCredentials credentials, RawCourse cs){
+        try{
+            Map<String, String> reqData = new HashMap<>(){{
+                put(COLLEGE, MY_COLLEGE);
+                put(PROGRAM, TARGET_PROGRAMS[0]);
+                put(EVAL_TYPE, NORMAL_EVAL);
+                put(NUMBER_ID, credentials.numberID());
+                put(COURSE_CODE, String.valueOf(cs.code()));
+                put(YEAR, String.valueOf(BASE_YEAR + cs.year()));
+            }};
+
+            if(cs.semester() == 0){
+                reqData.put(PERIOD_TYPE, TRIMESTER_PERIOD);
+                reqData.put(PERIOD, String.valueOf(2)); // 0
+            }else{
+                reqData.put(PERIOD_TYPE, SEMESTER_PERIOD);
+                reqData.put(PERIOD, String.valueOf(cs.semester()));
             }
 
-        }catch (FileNotFoundException e){
-            throw new UploadFileNotFound(info.getFilename());
+            Response res = Jsoup.connect(ENROLLS_BASE_URL)
+                    .data(reqData)
+                    .postDataCharset(QUERY_ENCODING)
+                    .method(Method.GET)
+                    .cookie(COOKIE_NAME, credentials.cookie())
+                    .execute();
+
+            if(res.statusCode() == 200)
+                return parseRows(res.parse());
+        }catch (IOException e){}
+        return null;
+    }
+
+
+    /*
+    public static void main(String[] args) throws Exception {
+
+        RawCourse cs = new RawCourse(8150, 1, 3);
+        ClipCredentials credentials =  getStudentInfo("<username>", "<password>");
+
+        System.out.println(credentials);
+        if (credentials == null){
+            System.out.println("Error getting credentials");
+            return;
         }
-        return records.iterator();
-    }
 
-    public static Iterator<EnrollRecord> getRecords(UploadInfo info) throws UploadException {
-        Iterator<EnrollRecord> my_records;
-        if(info instanceof FileUploadInfo){
-            my_records = getFileRecords((FileUploadInfo) info);
-        }else{ // info instanceof UrlUploadInfo
-            throw new UnsupportedOperationException("We don't support any UploadInfo but FileUploadInfo yet.");
+        Iterator<RawStudent> it = getEnrolls(credentials, cs);
+
+        if(it == null){
+            System.out.println("Error downloading and parsing course enrolls.");
+            System.out.println("Check if your internet is well and try again.");
+            return;
         }
 
-        /*
-        if(my_records.isEmpty()){
-            TODO: exception, it should not be empty :)
-        }*/
-        return my_records;
+        // IP alunos ->  .....|
+        if(!it.hasNext())
+            System.out.println("No students :(");
+        else{
+            CliTable table = new Table(new String[]{"NUMBER", "NAME", "GRADE"});
+            while (it.hasNext()){
+                RawStudent st = it.next();
+                table.add(st.number(), st.name(), format("%5.2f", st.grade()) );
+            }
+            table.print();
+        }
     }
-
-    public static CourseInfo createInfo(String name, Semesters semester, int year, int credits){
-        return new CourseInfo(name, semester, year, credits);
-    }
+     */
 }

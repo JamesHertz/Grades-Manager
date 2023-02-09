@@ -3,7 +3,6 @@ package jh.projects.grades;
 import jh.projects.grades.database.DataBase;
 import jh.projects.grades.database.GMDataBase;
 import jh.projects.grades.manager.*;
-import jh.projects.grades.uploader.CourseInfo;
 import jh.projects.grades.uploader.GradesUploader;
 
 // cli-parser imports
@@ -15,13 +14,7 @@ import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
 import jh.projects.cliparser.cliApp.api.CliAPI;
 import jh.projects.cliparser.cliApp.api.table.CliTable;
 import jh.projects.cliparser.cliApp.listeners.CliRunListener;
-import jh.projects.grades.uploader.UrlUploadInfo;
-import jh.projects.grades.uploader.excepctions.UploadException;
-import jh.projects.grades.uploader.excepctions.UploadFileNotFound;
-
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Scanner;
 
 import static java.lang.String.format;
 import static jh.projects.grades.manager.Semesters.*;
@@ -147,6 +140,7 @@ public class Main implements CliRunListener {
 //            desc = "uploads enrollments to Grades Manager"
 //    )
     public void upload(CliAPI api, String filename){ // this is fun :)
+        // used to upload courses to your db
        // Course cs = manager.getCourse(course_id.toUpperCase());
        //FileUploadInfo up = new FileUploadInfo(course_id.toUpperCase(), new String[]{base, other});
        //up.setCourseInfo(
@@ -174,6 +168,7 @@ public class Main implements CliRunListener {
     // api.prompt(String, type1, type2, type3); -> return next string
     // api.prompt();
     // api.prompt(type 1, type2) -> parses the line and returns an a
+    /*
     private CourseInfo getCourseInfo(CliAPI api){
        CliForm form = api.createForm()
                .addField("Course Name", STRING)
@@ -210,6 +205,7 @@ public class Main implements CliRunListener {
 
        return GradesUploader.createInfo(name, sem, year, credits);
     }
+     */
 
      private String format_ord_num(int num){
         return switch (num) {

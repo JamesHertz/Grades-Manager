@@ -1,11 +1,13 @@
 package jh.projects.grades.manager;
 
 public interface Course {
-    String id();
-    String name();
-    int year();
-    int credits();
-    Semesters semester();
-    // TODO: FOR THE NEAR FUTURE
+    String getCourseID();
+    String getName();
+    int getYear();
+    int getCredits();
+    Semesters getSemester();
+    // int getCode();
     // Iterator<Evaluations> listEvaluations()
+
+    // TODO: FOR THE NEAR FUTURE
 }

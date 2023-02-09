@@ -3,7 +3,6 @@ package jh.projects.grades.manager;
 public class ColleagueCourse implements Course{
 
     private final String id, name;
-
     private final int year, credits;
     private final Semesters semester;
 
@@ -16,27 +15,27 @@ public class ColleagueCourse implements Course{
     }
 
     @Override
-    public String id() {
+    public String getCourseID() {
         return id;
     }
 
     @Override
-    public String name() {
+    public String getName() {
         return name;
     }
 
     @Override
-    public int year() {
+    public int getYear() {
         return year;
     }
 
     @Override
-    public int credits() {
+    public int getCredits() {
         return credits;
     }
 
     @Override
-    public Semesters semester() {
+    public Semesters getSemester() {
         return semester;
     }
 }

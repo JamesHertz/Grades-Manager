@@ -1,6 +1,8 @@
 package jh.projects.grades.uploader;
 
 import static org.jsoup.Connection.*;
+
+import jh.projects.grades.rawdata.CourseInfo;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -91,8 +93,6 @@ public class GradesUploader {
         return null;
     }
 
-    public record RawCourse(int code, int semester, int year){};
-
     public record ClipCredentials(String cookie, String numberID){};
 
     private static int getValue(String value){
@@ -119,7 +119,7 @@ public class GradesUploader {
         return data.iterator();
     }
 
-    public static Iterator<StudentRecord> getEnrolls(ClipCredentials credentials, RawCourse cs){
+    public static Iterator<StudentRecord> getEnrolls(ClipCredentials credentials, CourseInfo cs){
         try{
             Map<String, String> reqData = new HashMap<>(){{
                 put(COLLEGE, MY_COLLEGE);

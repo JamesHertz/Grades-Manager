@@ -15,6 +15,7 @@ create table Course (
     credits int,
     cs_year int,
     cs_semester int,
+    cs_code int,
 
     check(credits > 0)
 );
@@ -30,14 +31,18 @@ create table Enrollment (
     foreign key (cs_id) references Course
 );
 
--- PROPOSAL FOR INSTEAD OF THE TRIGGERS :)
 create view MyStudent as
-    select st_number as number, st_name as name, sum(credits) as total_credits, round(sum(credits * grade)/sum(credits), 2) as avg_grade
-    from Student natural inner join Enrollment natural inner join Course
-    where grade >= 10
-    group by name, number;
+    select st_number as number, st_name as name, total_credits, avg_grade
+    from Student natural left outer join (
+        select st_number, sum(credits) as total_credits, round(sum(credits * grade)/sum(credits), 2) as avg_grade
+        from Enrollment natural inner join Course
+        where grade >= 10
+        group by st_number
+    );
 
+/*
 create view TopBoard as
     select * 
     from MyStudent
     order by total_credits desc, avg_grade desc;
+ */

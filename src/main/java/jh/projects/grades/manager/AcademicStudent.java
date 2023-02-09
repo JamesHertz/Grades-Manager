@@ -22,22 +22,22 @@ class AcademicStudent implements EditStudent{
 
 
     @Override
-    public String name() {
+    public String getName() {
         return name;
     }
 
     @Override
-    public int number() {
+    public int getNumber() {
         return number;
     }
 
     @Override
-    public float averageGrade() {
+    public float getAvgGrade() {
         return averageGrade;
     }
 
     @Override
-    public int totalCredits() {
+    public int getTotalCredits() {
         return totalCredits;
     }
 

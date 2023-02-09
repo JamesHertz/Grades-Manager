@@ -1,13 +1,8 @@
 package jh.projects.grades;
 
-import jh.projects.grades.database.DataBase;
-import jh.projects.grades.database.GMDataBase;
 import jh.projects.grades.manager.*;
-import jh.projects.grades.uploader.GradesUploader;
 
 // cli-parser imports
-import jh.projects.cliparser.cliApp.api.form.CliForm;
-import jh.projects.cliparser.cliApp.api.form.CliFormValue;
 import jh.projects.cliparser.cliApp.CliApp;
 import jh.projects.cliparser.cliApp.SimpleCliApp;
 import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
@@ -18,7 +13,6 @@ import java.util.Iterator;
 
 import static java.lang.String.format;
 import static jh.projects.grades.manager.Semesters.*;
-import static jh.projects.cliparser.parser.DataType.*;
 
 public class Main implements CliRunListener {
     // TODO: have a mini animation playing on the background (writing loading on the screen)
@@ -49,13 +43,13 @@ public class Main implements CliRunListener {
             while(students.hasNext()){
                 Student st = students.next();
 
-                if(lastGrade == null) lastGrade = st.averageGrade();
-                if(lastGrade != st.averageGrade()){
-                    lastGrade = st.averageGrade();
+                if(lastGrade == null) lastGrade = st.getAvgGrade();
+                if(lastGrade != st.getAvgGrade()){
+                    lastGrade = st.getAvgGrade();
                     rank++;
                 }
-                table.add(format("%3d", count++), format("%3d°", rank), st.number(),
-                        st.name(), format("%.2f", st.averageGrade()), format("%5d", st.totalCredits()));
+                table.add(format("%3d", count++), format("%3d°", rank), st.getNumber(),
+                        st.getName(), format("%.2f", st.getAvgGrade()), format("%5d", st.getTotalCredits()));
             }
 
             table.print();
@@ -74,7 +68,7 @@ public class Main implements CliRunListener {
             CliTable table = api.createTable(new String[]{ "NUMBER", "NAME"});
             while(students.hasNext()){
                 Student st = students.next();
-                table.add(st.number(), st.name());
+                table.add(st.getNumber(), st.getName());
             }
             table.print();
         }
@@ -89,7 +83,7 @@ public class Main implements CliRunListener {
         if(st == null) {
             System.out.println("No such student");
         }else{
-            System.out.printf("Student: %s - %d\n", st.name(), st.number());
+            System.out.printf("Student: %s - %d\n", st.getName(), st.getNumber());
             Iterator<Enrollment> enrolls = st.getEnrollments();
 
             if(!enrolls.hasNext()) System.out.println("No enrollments");
@@ -98,7 +92,7 @@ public class Main implements CliRunListener {
                     Enrollment aux = enrolls.next();
 
                     Course course = aux.getCourse();
-                    System.out.printf("> %s - (%s)\n",course.id(), course.name());
+                    System.out.printf("> %s - (%s)\n",course.getCourseID(), course.getName());
                     System.out.printf("final-grade: %.2f\n\n", aux.grade());
                 }
             }
@@ -118,11 +112,11 @@ public class Main implements CliRunListener {
         else{
             while(courses.hasNext()){
                 Course cs = courses.next();
-                System.out.printf("# %s (%s)\n", cs.id(), cs.name()); // heading
-                System.out.printf("credits: %d\n", cs.credits());
-                System.out.printf("period: %s year - ", format_ord_num(cs.year()));
+                System.out.printf("# %s (%s)\n", cs.getCourseID(), cs.getName()); // heading
+                System.out.printf("credits: %d\n", cs.getCredits());
+                System.out.printf("period: %s year - ", format_ord_num(cs.getYear()));
 
-                Semesters sem = cs.semester();
+                Semesters sem = cs.getSemester();
                 if(sem == THIRD_TRIMESTER)
                     System.out.println("3rd trimester");
                 else
@@ -140,80 +134,22 @@ public class Main implements CliRunListener {
 //            desc = "uploads enrollments to Grades Manager"
 //    )
     public void upload(CliAPI api, String filename){ // this is fun :)
-        // used to upload courses to your db
-       // Course cs = manager.getCourse(course_id.toUpperCase());
-       //FileUploadInfo up = new FileUploadInfo(course_id.toUpperCase(), new String[]{base, other});
-       //up.setCourseInfo(
-       //      new CourseInfo("MyCourse", FIRST, 3, 9)
-       //);
 
-       // try {
-       //     manager.uploadEnrolls(up);
-       // } catch (UploadFileNotFound e){
-       //     System.out.printf("file '%s' not found\n", e.getFilename());
-       // } catch (UploadException e) {
-       //     System.out.println(e.getMessage());
-       // }
+    }
 
-       /*
-       if(cs != null)
-           System.out.printf("Course id '%s' already exists as '%s'\n", cs.id(), cs.name());
-       else if( (info = getCourseInfo(api)) != null) {
-           System.out.println("adding things :)");
-           // TODO: ask for the files.
-       }
-        */
+     private String format_ord_num(int num){
+        return switch (num % 10) {
+            case 1 -> "1st";
+            case 2 -> "2nd";
+            case 3 -> "rd";
+            default -> num + "th";
+        };
     }
 
     // api.prompt(String, type1, type2, type3); -> return next string
     // api.prompt();
     // api.prompt(type 1, type2) -> parses the line and returns an a
-    /*
-    private CourseInfo getCourseInfo(CliAPI api){
-       CliForm form = api.createForm()
-               .addField("Course Name", STRING)
-               .addField("Semester", INTEGER)
-               .addField("Year", INTEGER)
-               .addField("Credits", INTEGER);
 
-       CliFormValue[] values = form.run();
-
-       if(values == null){
-           form.printError();
-           return null;
-       }
-
-       String name = values[0].toString();
-       Semesters sem = Semesters.getSemester(values[1].toInt());
-       int year = values[2].toInt();
-       int credits = values[3].toInt();
-
-       if(sem == null){
-           System.out.println("Invalid semester: " + values[1]);
-           return null;
-       }
-
-       if(year <= 0){
-           System.out.println("Invalid year: " + year);
-           return null;
-       }
-
-       if(credits <= 0){
-           System.out.println("Invalid credits: " + credits);
-           return null;
-       }
-
-       return GradesUploader.createInfo(name, sem, year, credits);
-    }
-     */
-
-     private String format_ord_num(int num){
-        return switch (num) {
-            case 1 -> "1st";
-            case 2 -> "2nd";
-            default -> num + "th";
-        };
-    }
     /*
         How to insert data into my program?
         Which commands should I have?

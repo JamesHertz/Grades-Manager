@@ -10,7 +10,9 @@ public enum Queries {
     GET_STUDENT_ENROLLS("select cs_id, st_number, grade from Enrollment where st_number=?"),
     GET_COURSE_ENROLLS("select cs_id, st_number, grade from Enrollment where cs_id=?"),
     GET_STUDENTS("select number, name, total_credits, avg_grade from MyStudent"),
-    GET_COURSES("select cs_id, cs_name, credits, cs_year, cs_semester, cs_code from Course");
+    GET_COURSES("select cs_id, cs_name, credits, cs_year, cs_semester from Course");
+   //  GET_COURSES("select cs_id, cs_name, credits, cs_year, cs_semester, cs_code from Course");
+
 
     private final String value;
     Queries(String value){

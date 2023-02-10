@@ -21,7 +21,6 @@ public class GMDataBase implements DataBase{
             throw new RuntimeException("Unable to load DB driver.");
         }
     }
-    // queries
 
     private static final String DB_URL_FORMAT = "jdbc:sqlite:%s";
 
@@ -133,12 +132,13 @@ public class GMDataBase implements DataBase{
            ResultSet res = st.getResultSet();
            while(res.next()){
                cs.add(new RawCourse(
-                       res.getString(1), // cs_id
-                       res.getString(2), // cs_name
-                       res.getInt(3),    // credits
-                       res.getInt(4),    // cs_year
+                       res.getString(1),  // cs_id
+                       res.getString(2),  // cs_name
+                       res.getInt(3),     // credits
+                       res.getInt(4),     // cs_year
                        res.getInt(5),     // cs_semester
-                       res.getInt(6)      // cs_code
+                       0
+                       //res.getInt(6)      // cs_code
                ));
            }
         } catch (SQLException e) {

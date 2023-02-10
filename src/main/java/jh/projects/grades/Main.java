@@ -30,7 +30,7 @@ public class Main implements CliRunListener {
             key = "top",
             desc = "lists the students by sorted by credits and then by average grade"
     )
-    public void top_board(CliAPI api){
+    public void topBoard(CliAPI api){
         Iterator<Student> students = manager.top();
         if(!students.hasNext())
             System.out.println("No students!");
@@ -60,7 +60,7 @@ public class Main implements CliRunListener {
             key = "students",
             desc = "lists all students"
     )
-    public void list_students(CliAPI api){
+    public void listStudents(CliAPI api){
         Iterator<Student> students = manager.listAllStudents();
         if(!students.hasNext())
             System.out.println("No students!");
@@ -78,7 +78,7 @@ public class Main implements CliRunListener {
             key = "enrolls",
             desc = "lists all the course that the given student is enrolled in"
     )
-    public void print_enrolls(int student_number){
+    public void printEnrolls(int student_number){
         Student st = manager.getStudent(student_number);
         if(st == null) {
             System.out.println("No such student");
@@ -104,7 +104,7 @@ public class Main implements CliRunListener {
             key = "courses",
             desc = "lists all courses"
     )
-    public void print_courses(){
+    public void printCourses(){
         Iterator<Course> courses = manager.listAllCourses();
 
         if(!courses.hasNext())
@@ -130,10 +130,10 @@ public class Main implements CliRunListener {
         // then by id number
     }
 
-//    @CliAppCommand(
-//            desc = "uploads enrollments to Grades Manager"
-//    )
-    public void upload(CliAPI api, String filename){ // this is fun :)
+    @CliAppCommand(
+            desc = "uploads enrollments to Grades Manager"
+    )
+    public void uploadCourses(CliAPI api, String filename){ // this is fun :)
 
     }
 

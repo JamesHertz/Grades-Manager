@@ -20,14 +20,14 @@ public class MyManager implements GradesManager{
     // the first compares by name
     // and the second by credits if tie avg_grade and if still tie by name
     private static final Comparator<Student> cmpByName = (s1, s2) -> {
-            final Collator ins = Collator.getInstance();
-            ins.setStrength(Collator.NO_DECOMPOSITION);
-            return ins.compare(s1.getName(), s2.getName());
+        final Collator ins = Collator.getInstance();
+        ins.setStrength(Collator.NO_DECOMPOSITION);
+        return ins.compare(s1.getName(), s2.getName());
     };
     private static final Comparator<Student> cmpByGrades = (s1, s2) -> {
         int credits_diff =  s2.getTotalCredits() - s1.getTotalCredits();
         if(credits_diff != 0) return credits_diff;
-        float grades_diff = s2.getAvgGrade() - s1.getAvgGrade() ;
+        float grades_diff = s2.getAvgGrade() - s1.getAvgGrade();
         if(grades_diff != 0) return (grades_diff > 0) ? 1 : -1 ;
         return cmpByName.compare(s1, s2); // compare by name
     };
@@ -38,13 +38,11 @@ public class MyManager implements GradesManager{
     private final Map<String, Course> courses;
     private final SortedSet<Student> studentsByOrder;
     private final List<Student> topBoard;
-    private final Connection dbConnection;
     private final DataBase db;
 
     public MyManager(){
         db = new GMDataBase(DB_NAME);
 
-        dbConnection = getConnection(); // what to when this is null??
         courses = new HashMap<>();
         students = new TreeMap<>(); // by number
         topBoard = new ArrayList<>(DEFAULT_STUDENT_NUMBER);
@@ -55,7 +53,6 @@ public class MyManager implements GradesManager{
 
 
 
-    // TODO: fix this naive approach
     private EnrollsProxy createEnrollsProxy(int studentNumber){
         return () -> {
             Iterator<RawEnrollment> enrolls = db.getEnrolls(studentNumber);

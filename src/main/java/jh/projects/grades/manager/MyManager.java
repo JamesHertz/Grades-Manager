@@ -104,6 +104,7 @@ public class MyManager implements GradesManager{
             // courses.put(raw.courseID(), null); // by now :)
             db.insertCourse(cs.next());
         }
+
         // db.commit();
     }
 

@@ -14,6 +14,9 @@ public interface GradesManager {
 
     void uploadCourses(String filename); //UploadInfo info) throws UploadException;
 
+    // updateAll();
+    // updateCourse(String courseID);
+
     /*
         Assumptions:
             -> I only keep courses that has enrollments

@@ -2,7 +2,6 @@ package jh.projects.grades.uploader;
 
 import static org.jsoup.Connection.*;
 
-import jh.projects.grades.rawdata.CourseInfo;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -94,6 +93,7 @@ public class GradesUploader {
     }
 
     public record ClipCredentials(String cookie, String numberID){};
+    public record CourseInfo(int year, int semester, int code) {}
 
     private static int getValue(String value){
         try{
@@ -150,39 +150,4 @@ public class GradesUploader {
         }catch (IOException e){}
         return null;
     }
-
-
-    /*
-    public static void main(String[] args) throws Exception {
-
-        RawCourse cs = new RawCourse(8150, 1, 3);
-        ClipCredentials credentials =  getStudentInfo("<username>", "<password>");
-
-        System.out.println(credentials);
-        if (credentials == null){
-            System.out.println("Error getting credentials");
-            return;
-        }
-
-        Iterator<RawStudent> it = getEnrolls(credentials, cs);
-
-        if(it == null){
-            System.out.println("Error downloading and parsing course enrolls.");
-            System.out.println("Check if your internet is well and try again.");
-            return;
-        }
-
-        // IP alunos ->  .....|
-        if(!it.hasNext())
-            System.out.println("No students :(");
-        else{
-            CliTable table = new Table(new String[]{"NUMBER", "NAME", "GRADE"});
-            while (it.hasNext()){
-                RawStudent st = it.next();
-                table.add(st.number(), st.name(), format("%5.2f", st.grade()) );
-            }
-            table.print();
-        }
-    }
-     */
 }

@@ -6,16 +6,12 @@ import jh.projects.grades.rawdata.RawCourse;
 import jh.projects.grades.rawdata.RawEnrollment;
 import jh.projects.grades.rawdata.RawStudent;
 
-import java.sql.*;
 import java.text.Collator;
 import java.util.*;
-
-import static jh.projects.grades.manager.DataBaseConnection.*;
 
 // TODO: finish course thing and start working on the inserting info commands.
 public class MyManager implements GradesManager{
 
-    // TODO: check caching rows jdbc docs
     // comparators used in the app
     // the first compares by name
     // and the second by credits if tie avg_grade and if still tie by name
@@ -24,6 +20,7 @@ public class MyManager implements GradesManager{
         ins.setStrength(Collator.NO_DECOMPOSITION);
         return ins.compare(s1.getName(), s2.getName());
     };
+
     private static final Comparator<Student> cmpByGrades = (s1, s2) -> {
         int credits_diff =  s2.getTotalCredits() - s1.getTotalCredits();
         if(credits_diff != 0) return credits_diff;
@@ -33,7 +30,7 @@ public class MyManager implements GradesManager{
     };
 
     private static final int DEFAULT_STUDENT_NUMBER = 300;
-    private static final String DB_NAME = "dbs/file1.db";
+    private static final String DB_NAME = "dbs/storage.db";
     private final SortedMap<Integer, Student> students;
     private final Map<String, Course> courses;
     private final SortedSet<Student> studentsByOrder;
@@ -95,6 +92,7 @@ public class MyManager implements GradesManager{
     @Override
     public void uploadCourses(String filename){ // UploadInfo info) throws UploadException {
 
+        // db.insertCourse();
     }
 
 

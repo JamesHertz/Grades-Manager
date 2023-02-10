@@ -17,8 +17,13 @@ import static jh.projects.grades.manager.Semesters.*;
 public class Main implements CliRunListener {
     // TODO: have a mini animation playing on the background (writing loading on the screen)
     private static final String INIT_MESSAGE = "By ©James Hertz\nWelcome to Grades Manager\n";
-
     private GradesManager manager;
+    /*
+        TODO: add this dependencies below:
+                -> implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.40.1.0'
+                -> implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.4'
+                -> cli-parser :)
+     */
 
     @Override
     public void onRun(CliAPI api) {
@@ -133,7 +138,15 @@ public class Main implements CliRunListener {
     @CliAppCommand(
             desc = "uploads enrollments to Grades Manager"
     )
-    public void uploadCourses(CliAPI api, String filename){ // this is fun :)
+    public void upload(CliAPI api, String filename){ // this is fun :)
+
+    }
+
+    public void update(String mode){
+
+    }
+
+    public void login(){
 
     }
 
@@ -146,6 +159,14 @@ public class Main implements CliRunListener {
         };
     }
 
+
+    /*
+
+        -> JSON parser
+        -> configuration
+        -> login command
+        -> update command
+     */
     // api.prompt(String, type1, type2, type3); -> return next string
     // api.prompt();
     // api.prompt(type 1, type2) -> parses the line and returns an a

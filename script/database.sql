@@ -15,7 +15,7 @@ create table Course (
     credits int,
     cs_year int,
     cs_semester int,
-    cs_code int,
+    cs_code int unique,
 
     check(credits > 0)
 );
@@ -39,10 +39,3 @@ create view MyStudent as
         where grade >= 10
         group by st_number
     );
-
-/*
-create view TopBoard as
-    select * 
-    from MyStudent
-    order by total_credits desc, avg_grade desc;
- */

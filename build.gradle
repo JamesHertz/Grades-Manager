@@ -3,6 +3,8 @@ plugins {
 }
 
 jar {
+    // for inconvenient reasons I have to do this :(
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes 'Main-Class': 'jh.projects.grades.Main'
     }
@@ -12,13 +14,17 @@ jar {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 tasks.withType(JavaCompile) {
     options.compilerArgs += "-parameters"
 }
 
 dependencies {
-//     implementation files("lib/*.jar")
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.2'
 }
 
 group 'jh.projects'

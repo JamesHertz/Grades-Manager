@@ -137,8 +137,7 @@ public class GMDataBase implements DataBase{
                        res.getInt(3),     // credits
                        res.getInt(4),     // cs_year
                        res.getInt(5),     // cs_semester
-                       0
-                       //res.getInt(6)      // cs_code
+                       res.getInt(6)      // cs_code
                ));
            }
         } catch (SQLException e) {

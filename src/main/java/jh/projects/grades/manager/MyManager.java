@@ -5,6 +5,7 @@ import jh.projects.grades.database.GMDataBase;
 import jh.projects.grades.rawdata.RawCourse;
 import jh.projects.grades.rawdata.RawEnrollment;
 import jh.projects.grades.rawdata.RawStudent;
+import jh.projects.grades.uploader.CourseUploader;
 
 import java.text.Collator;
 import java.util.*;
@@ -91,8 +92,19 @@ public class MyManager implements GradesManager{
 
     @Override
     public void uploadCourses(String filename){ // UploadInfo info) throws UploadException {
-
-        // db.insertCourse();
+        Iterator<RawCourse> cs = CourseUploader.getCourses(filename);
+        // db.beginTransaction();
+        while(cs.hasNext()){
+            RawCourse raw = cs.next() ;
+            // TODO: have an course-code index on memory :)
+            if(courses.containsKey(raw.courseID())){
+                // cb.rollBack();
+                // throw new CourseAlreadyExistsException(raw.courseID());
+            }
+            // courses.put(raw.courseID(), null); // by now :)
+            db.insertCourse(cs.next());
+        }
+        // db.commit();
     }
 
 

@@ -92,6 +92,7 @@ public class MyManager implements GradesManager{
 
     @Override
     public void uploadCourses(String filename){ // UploadInfo info) throws UploadException {
+        /*
         Iterator<RawCourse> cs = CourseUploader.getCourses(filename);
         // db.beginTransaction();
         while(cs.hasNext()){
@@ -104,6 +105,8 @@ public class MyManager implements GradesManager{
             // courses.put(raw.courseID(), null); // by now :)
             db.insertCourse(cs.next());
         }
+
+         */
 
         // db.commit();
     }

@@ -1,7 +1,7 @@
 package jh.projects.grades.manager;
 
+// TODO: change to a record
 public interface Enrollment {
-    // TODO: look at this later
     Student getStudent();
     Course getCourse();
     float grade();

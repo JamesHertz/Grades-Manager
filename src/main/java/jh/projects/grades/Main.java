@@ -11,6 +11,8 @@ import jh.projects.cliparser.cliApp.api.table.CliTable;
 import jh.projects.cliparser.cliApp.listeners.CliRunListener;
 import jh.projects.grades.rawdata.RawCourse;
 import jh.projects.grades.uploader.CourseUploader;
+import jh.projects.grades.uploader.exceptions.NoSuchFileException;
+import jh.projects.grades.uploader.exceptions.ParsingException;
 
 import java.util.Iterator;
 import java.util.List;
@@ -143,19 +145,26 @@ public class Main implements CliRunListener {
             desc = "uploads enrollments to Grades Manager"
     )
     public void upload(CliAPI api, String filename){ // this is fun :)
-        Iterator<RawCourse> it = CourseUploader.getCourses(filename);
-        if(!it.hasNext())
-            System.out.println("Nothing :(");
-        else {
-            CliTable table = api.createTable(
-               new String[]{"ID", "NAME", "CREDITS", "YEAR", "SEMESTER"}
-            );
-            while (it.hasNext()){
-                RawCourse cs = it.next();
-                table.add(cs.courseID(), cs.name(), cs.credits(), cs.year(), cs.semester());
+        try{
+            Iterator<RawCourse> it = CourseUploader.getCourses(filename);
+            if(!it.hasNext())
+                System.out.println("Nothing :(");
+            else {
+                CliTable table = api.createTable(
+                   new String[]{"ID", "NAME", "CREDITS", "YEAR", "SEMESTER"}
+                );
+                while (it.hasNext()){
+                    RawCourse cs = it.next();
+                    table.add(cs.courseID(), cs.name(), cs.credits(), cs.year(), cs.semester());
+                }
+                table.print();
             }
-            table.print();
+        }catch (NoSuchFileException e){
+            System.out.printf("File '%s' not found or it's inaccessible.", e.getFilename());
+        }catch (ParsingException e){
+            System.out.println("Error parsing file: " + e.getMessage());
         }
+
 
     }
 

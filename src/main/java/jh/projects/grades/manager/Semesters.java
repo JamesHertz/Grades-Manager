@@ -22,4 +22,15 @@ public enum Semesters {
     public String toString() {
         return super.toString().toLowerCase();
     }
+
+    public int compare(Semesters s2){
+       return this.getComparableID() - s2.getComparableID();
+    }
+
+    private int getComparableID(){
+        return (id == 0 || id == 2) ? id + 1 : id;
+    }
+
+
+
 }

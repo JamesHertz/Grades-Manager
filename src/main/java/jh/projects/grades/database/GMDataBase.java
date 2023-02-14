@@ -191,6 +191,7 @@ public class GMDataBase implements DataBase{
     public void rollBack() {
         try {
             dbConnection.rollback();
+            dbConnection.setAutoCommit(true);
         } catch (SQLException e) {
             handleSQLException(e);
         }

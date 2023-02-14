@@ -9,14 +9,12 @@ import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
 import jh.projects.cliparser.cliApp.api.CliAPI;
 import jh.projects.cliparser.cliApp.api.table.CliTable;
 import jh.projects.cliparser.cliApp.listeners.CliRunListener;
+import jh.projects.grades.manager.exceptions.GMException;
 import jh.projects.grades.rawdata.RawCourse;
 import jh.projects.grades.uploader.CourseUploader;
-import jh.projects.grades.uploader.exceptions.NoSuchFileException;
-import jh.projects.grades.uploader.exceptions.ParsingException;
 import jh.projects.grades.uploader.exceptions.UploadException;
 
 import java.util.Iterator;
-import java.util.List;
 
 import static java.lang.String.format;
 import static jh.projects.grades.manager.Semesters.*;
@@ -35,7 +33,7 @@ public class Main implements CliRunListener {
     @Override
     public void onRun(CliAPI api) {
         System.out.println(INIT_MESSAGE);
-        this.manager = new MyManager();
+        this.manager = new Manager();
     }
 
     @CliAppCommand(
@@ -112,6 +110,10 @@ public class Main implements CliRunListener {
         }
     }
 
+    private String semToString(Semesters sem){
+        return (sem == THIRD_TRIMESTER) ? "3rd trimester" : format_ord_num(sem.getId()) + " semester";
+    }
+
     @CliAppCommand(
             key = "courses",
             desc = "lists all courses"
@@ -124,18 +126,12 @@ public class Main implements CliRunListener {
         else{
             while(courses.hasNext()){
                 Course cs = courses.next();
-                System.out.printf("# %s (%s)\n", cs.getCourseID(), cs.getName()); // heading
-                System.out.printf("credits: %d\n", cs.getCredits());
-                System.out.printf("period: %s year - ", format_ord_num(cs.getYear()));
 
-                Semesters sem = cs.getSemester();
-                if(sem == THIRD_TRIMESTER)
-                    System.out.println("3rd trimester");
-                else
-                    System.out.println(format_ord_num(sem.getId()) + " semester");
-
+                System.out.printf("# %s (%s)\n", cs.getCourseID(), cs.getName());
+                System.out.println("credits: " + cs.getCredits());
+                System.out.printf("period: %s year - %s\n", format_ord_num(cs.getYear()), semToString(cs.getSemester()));
                 System.out.println();
-            }
+           }
         }
 
         // try to print the courses by year and by semester
@@ -147,24 +143,10 @@ public class Main implements CliRunListener {
     )
     public void upload(CliAPI api, String filename){ // this is fun :)
         try{
-            Iterator<RawCourse> it = CourseUploader.getCourses(filename);
-            if(!it.hasNext())
-                System.out.println("Nothing :(");
-            else {
-                CliTable table = api.createTable(
-                   new String[]{"ID", "NAME", "CREDITS", "YEAR", "SEMESTER"}
-                );
-                while (it.hasNext()){
-                    RawCourse cs = it.next();
-                    table.add(cs.courseID(), cs.name(), cs.credits(), cs.year(), cs.semester());
-                }
-                table.print();
-            }
-        }catch (UploadException e){
+            System.out.printf("%d new courses uploaded\n", manager.uploadCourses(filename));
+        }catch (GMException | UploadException e){
             System.out.println("Error uploading courses: " + e.getMessage());
         }
-
-
     }
 
     public void update(String mode){
@@ -179,7 +161,7 @@ public class Main implements CliRunListener {
         return switch (num % 10) {
             case 1 -> "1st";
             case 2 -> "2nd";
-            case 3 -> "rd";
+            case 3 -> "3rd";
             default -> num + "th";
         };
     }

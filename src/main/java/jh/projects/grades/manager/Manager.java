@@ -2,19 +2,19 @@ package jh.projects.grades.manager;
 
 import jh.projects.grades.database.DataBase;
 import jh.projects.grades.database.GMDataBase;
+import jh.projects.grades.manager.exceptions.CourseAlreadyExistsException;
+import jh.projects.grades.manager.exceptions.GMException;
 import jh.projects.grades.rawdata.RawCourse;
 import jh.projects.grades.rawdata.RawEnrollment;
 import jh.projects.grades.rawdata.RawStudent;
 import jh.projects.grades.uploader.CourseUploader;
-import jh.projects.grades.uploader.exceptions.NoSuchFileException;
-import jh.projects.grades.uploader.exceptions.ParsingException;
 import jh.projects.grades.uploader.exceptions.UploadException;
 
 import java.text.Collator;
 import java.util.*;
 
 // TODO: finish course thing and start working on the inserting info commands.
-public class MyManager implements GradesManager{
+public class Manager implements GradesManager{
 
     // comparators used in the app
     // the first compares by name
@@ -33,6 +33,18 @@ public class MyManager implements GradesManager{
         return cmpByName.compare(s1, s2); // compare by name
     };
 
+    /*
+    private static final Comparator<Course> courseComp = (c1, c2) -> {
+        int diff =  c1.getYear() - c2.getYear();
+        if(diff != 0) return diff;
+
+        diff = c1.getSemester().compare(c2.getSemester());
+        if(diff != 0) return diff;
+
+        return c1.getName().compareTo(c1.getName());
+    };
+     */
+
     private static final int DEFAULT_STUDENT_NUMBER = 300;
     private static final String DB_NAME = "dbs/storage.db";
     private final SortedMap<Integer, Student> students;
@@ -41,10 +53,10 @@ public class MyManager implements GradesManager{
     private final List<Student> topBoard;
     private final DataBase db;
 
-    public MyManager(){
+    public Manager(){
         db = new GMDataBase(DB_NAME);
 
-        courses = new HashMap<>();
+        courses = new TreeMap<>();
         students = new TreeMap<>(); // by number
         topBoard = new ArrayList<>(DEFAULT_STUDENT_NUMBER);
         studentsByOrder = new TreeSet<>(cmpByName);
@@ -74,10 +86,13 @@ public class MyManager implements GradesManager{
         Iterator<RawStudent> sts = db.getAllStudents();
         while(sts.hasNext()){
             RawStudent aux = sts.next();
-            Student st  = new AcademicStudent(aux.number(), aux.name())
-                    .setAvgGrade(aux.avgGrade())
-                    .setTotalCredits(aux.totalCredits())
-                    .setEnrolls(createEnrollsProxy(aux.number()));
+            Student st  = new GMStudent()
+                                .setStudentName(aux.name())
+                                .setStudentNumber(aux.number())
+                                .setStudentEnrolls(createEnrollsProxy(aux.number()))
+                                .setStudentGrade(aux.avgGrade())
+                                .setStudentTotalCredits(aux.totalCredits());
+
             students.put(aux.number(), st);
             studentsByOrder.add(st);
             topBoard.add(st);
@@ -86,31 +101,48 @@ public class MyManager implements GradesManager{
         Iterator<RawCourse> cs = db.getAllCourses();
         while(cs.hasNext()){
             RawCourse aux = cs.next();
-            courses.put(aux.courseID(), new ColleagueCourse(
-                aux.courseID(), aux.name(), aux.credits(), aux.year(),
-                Semesters.getSemester(aux.semester())
-            ));
+            Course new_cs =  new GMCourse()
+                        .setId(aux.courseID())
+                        .setName(aux.name())
+                        .setCredits(aux.credits())
+                        .setYear(aux.year())
+                        .setSemester(Semesters.getSemester(aux.semester()))
+                        .setCode(aux.code());
+
+            courses.put(aux.courseID(),new_cs);
         }
     }
 
     @Override
-    public void uploadCourses(String filename) throws UploadException{
+    public int uploadCourses(String filename) throws GMException,  UploadException {
         Iterator<RawCourse> cs = CourseUploader.getCourses(filename);
+        Map<String, Course> cache = new TreeMap<>();
+
         db.startTransaction();
         while(cs.hasNext()){
             RawCourse raw = cs.next() ;
-            // TODO: have an course-code index on memory :)
             if(courses.containsKey(raw.courseID())){
                 db.rollBack();
-                // throw new CourseAlreadyExistsException(raw.courseID());
+                throw new CourseAlreadyExistsException(raw.courseID());
             }
-            // courses.put(raw.courseID(), null); // by now :)
+
+            // todo: check if everything is okay
+            cache.put(raw.courseID(),
+                        new GMCourse()
+                            .setId(raw.courseID())
+                            .setName(raw.name())
+                            .setCredits(raw.credits())
+                            .setYear(raw.year())
+                            .setSemester(Semesters.getSemester(raw.semester()))
+                            .setCode(raw.code())
+            );
             db.insertCourse(cs.next());
         }
         db.commit();
+        courses.putAll(cache);
+
+        return cache.size();
     }
-
-
 
     @Override
     public Course getCourse(String course_id) {
@@ -135,6 +167,7 @@ public class MyManager implements GradesManager{
 
     @Override
     public Iterator<Course> listAllCourses() {
+        // todo: handle this mess below
         return courses.values().iterator();
     }
 }

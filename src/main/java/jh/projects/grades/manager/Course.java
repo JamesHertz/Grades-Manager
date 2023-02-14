@@ -6,8 +6,8 @@ public interface Course {
     int getYear();
     int getCredits();
     Semesters getSemester();
-    // int getCode();
-    // Iterator<Evaluations> listEvaluations()
+    int getCode();
 
     // TODO: FOR THE NEAR FUTURE
+    // Iterator<Evaluations> listEvaluations()
 }

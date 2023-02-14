@@ -1,5 +1,9 @@
 package jh.projects.grades.manager;
 
+import jh.projects.grades.uploader.exceptions.NoSuchFileException;
+import jh.projects.grades.uploader.exceptions.ParsingException;
+import jh.projects.grades.uploader.exceptions.UploadException;
+
 import java.util.Iterator;
 
 public interface GradesManager {
@@ -12,7 +16,7 @@ public interface GradesManager {
 
     // will read json file and upload all the course in it.
 
-    void uploadCourses(String filename); //UploadInfo info) throws UploadException;
+    void uploadCourses(String filename) throws UploadException;
 
     // updateAll();
     // updateCourse(String courseID);

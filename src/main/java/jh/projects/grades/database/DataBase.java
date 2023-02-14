@@ -21,5 +21,7 @@ public interface DataBase {
     Iterator<RawCourse> getAllCourses();
     Iterator<RawStudent> getAllStudents();
 
+    void startTransaction();
+    void rollBack();
     void commit();
 }

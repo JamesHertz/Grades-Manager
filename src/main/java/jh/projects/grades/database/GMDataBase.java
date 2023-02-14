@@ -53,7 +53,7 @@ public class GMDataBase implements DataBase{
             st.setString(2, name);
             st.executeUpdate();
         }catch (SQLException e){
-            e.printStackTrace();
+            handleSQLException(e);  // todo: change this
         }
     }
 
@@ -68,7 +68,7 @@ public class GMDataBase implements DataBase{
             st.setInt(6, cs.code());
             st.executeUpdate();
         }catch (SQLException e){
-            e.printStackTrace();
+            handleSQLException(e);  // todo: change this
         }
     }
 
@@ -80,7 +80,7 @@ public class GMDataBase implements DataBase{
            st.setFloat(3, grade);
            st.executeUpdate();
         }catch (SQLException e){
-            e.printStackTrace();
+           handleSQLException(e);  // todo: change this
         }
     }
 
@@ -99,7 +99,7 @@ public class GMDataBase implements DataBase{
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            handleSQLException(e);
         }
 
         return it.iterator();
@@ -119,7 +119,7 @@ public class GMDataBase implements DataBase{
                 ));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            handleSQLException(e);
         }
         return it.iterator();
     }
@@ -141,7 +141,7 @@ public class GMDataBase implements DataBase{
                ));
            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            handleSQLException(e);
         }
         return cs.iterator();
     }
@@ -162,7 +162,7 @@ public class GMDataBase implements DataBase{
             }
 
         }catch (SQLException e){
-            e.printStackTrace();
+            handleSQLException(e);
         }
 
         return sts.iterator();
@@ -172,8 +172,34 @@ public class GMDataBase implements DataBase{
     public void commit() {
         try {
             dbConnection.commit();
+            dbConnection.setAutoCommit(true);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            handleSQLException(e);
         }
     }
+
+    @Override
+    public void startTransaction() {
+        try {
+            dbConnection.setAutoCommit(false);
+        } catch (SQLException e) {
+            handleSQLException(e);
+        }
+    }
+
+    @Override
+    public void rollBack() {
+        try {
+            dbConnection.rollback();
+        } catch (SQLException e) {
+            handleSQLException(e);
+        }
+    }
+
+    private void handleSQLException(SQLException e){
+        System.out.println("Error handling DB operation : " + e.getMessage());
+        System.out.println("Aborting...");
+        System.exit(1);
+    }
+
 }

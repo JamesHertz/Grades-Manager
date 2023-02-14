@@ -13,6 +13,7 @@ import jh.projects.grades.rawdata.RawCourse;
 import jh.projects.grades.uploader.CourseUploader;
 import jh.projects.grades.uploader.exceptions.NoSuchFileException;
 import jh.projects.grades.uploader.exceptions.ParsingException;
+import jh.projects.grades.uploader.exceptions.UploadException;
 
 import java.util.Iterator;
 import java.util.List;
@@ -159,10 +160,8 @@ public class Main implements CliRunListener {
                 }
                 table.print();
             }
-        }catch (NoSuchFileException e){
-            System.out.printf("File '%s' not found or it's inaccessible.", e.getFilename());
-        }catch (ParsingException e){
-            System.out.println("Error parsing file: " + e.getMessage());
+        }catch (UploadException e){
+            System.out.println("Error uploading courses: " + e.getMessage());
         }
 
 

@@ -10,6 +10,7 @@ import jh.projects.cliparser.cliApp.api.CliAPI;
 import jh.projects.cliparser.cliApp.api.table.CliTable;
 import jh.projects.cliparser.cliApp.listeners.CliRunListener;
 import jh.projects.grades.manager.exceptions.GMException;
+import jh.projects.grades.rawdata.StudentRecord;
 import jh.projects.grades.uploader.GradesUploader;
 import jh.projects.grades.uploader.exceptions.UploadException;
 
@@ -158,6 +159,20 @@ public class Main implements CliRunListener {
             System.out.println("Error: You need to login first in order to perform this operation.");
         }else {
             System.out.println("This is gonna take a while...");
+            /*
+            Iterator<StudentRecord> aux = GradesUploader.getEnrolls(credentials, new GradesUploader.CourseInfo(2, 2, 2468));
+            if(aux == null || !aux.hasNext())
+                System.out.println("no grades :(");
+            else {
+                CliTable table = api.createTable(new String[]{"NUMBER", "NAME", "NUMBER"});
+                while (aux.hasNext()){
+                    StudentRecord rec = aux.next();
+                    table.add(rec.number(), rec.name(), rec.grade());
+                }
+                table.print();
+            }
+
+             */
             manager.update();
         }
     }
@@ -166,6 +181,7 @@ public class Main implements CliRunListener {
             desc = "login in clip"
     )
     public void login(CliAPI api){
+        System.out.println("Please insert in your Clip credentials.");
         String username = api.prompt("username : ");
         char[] password = System.console().readPassword("password : ");
         // todo: change this later :)

@@ -103,7 +103,7 @@ public class GradesUploader {
 
     private static int getValue(String value){
         try{
-            return Integer.parseInt(value);
+            return Integer.parseInt(value.trim());
         }catch (NumberFormatException e){
             return 0;
         }
@@ -117,7 +117,10 @@ public class GradesUploader {
             for(Element inner : el.getAllElements()){
                 if(idx == 1) number = getValue(inner.text());
                 else if(idx == 2) name = inner.text();
-                else grade = Math.max(grade, getValue(inner.text()));
+                else{
+                    String new_grade = inner.text().replaceAll("\\*", " ");
+                    grade = Math.max(grade, getValue(new_grade));
+                }
                 ++idx;
             }
             data.add(new StudentRecord(number, name, grade));

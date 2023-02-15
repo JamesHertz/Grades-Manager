@@ -190,12 +190,21 @@ public class Manager implements GradesManager {
 
             // fetches the grades
             for (int year = cs.getYear(); year <= 3; ++year) {
-                for (int sem = cs.getSemester().getId(); sem != 0 && sem <= 2; ++sem) {
+                for (int sem = cs.getSemester().getId(); sem <= 2; ++sem) {
                     Iterator<StudentRecord> records = GradesUploader.getEnrolls(
                             this.credentials, new CourseInfo(year, sem, cs.getCode())
                     );
 
-                    if (records == null) throw new RuntimeException("Error getting " + cs.getCourseID() + " grades.");
+                    if (records == null){
+                        db.rollBack();
+                        System.out.println("year=" + year + "; sem=" + sem);
+
+                        throw new RuntimeException(
+                                String.format("Error getting '%s' grades [year= %d; sem=%d]",
+                                        cs.getCourseID(), year, sem
+                                )
+                        );
+                    }
 
                     boolean first_time = dummy.isEmpty();
                     while (records.hasNext()) {
@@ -205,6 +214,8 @@ public class Manager implements GradesManager {
                             dummy.put(rec.number(), rec);
                         }
                     }
+
+                    if(sem == 0) break; // avoid problems when it's a trimester ;)
                 }
             }
 

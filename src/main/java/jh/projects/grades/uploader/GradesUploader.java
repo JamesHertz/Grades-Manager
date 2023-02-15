@@ -149,6 +149,7 @@ public class GradesUploader {
             for(String eval : EVALS_TYPE){
                 reqData.put(EVAL_TYPE, eval);
 
+                int empty_times = 0;
                 for(String program : TARGET_PROGRAMS){
                     reqData.put(PROGRAM, program);
 
@@ -158,10 +159,16 @@ public class GradesUploader {
                         .method(Method.GET)
                         .cookie(COOKIE_NAME, credentials.cookie())
                         .execute();
+                    // todo: think about this :)
                     if(res.statusCode() != 200) return null;
 
+                    Document doc = res.parse();
+                    if(doc.text().isBlank()){
+                        ++empty_times;
+                        continue;
+                    }
                     // merge grades :)
-                    Iterator<StudentRecord> it = parseRows(res.parse());
+                    Iterator<StudentRecord> it = parseRows(doc);
                     while(it.hasNext()){
                         StudentRecord rec = it.next();
                         StudentRecord other = records.get(rec.number());
@@ -169,7 +176,10 @@ public class GradesUploader {
                             records.put(rec.number(), rec);
                     }
 
+                    // by now :)
+                    if(empty_times == 2) break;
                 }
+
 
             }
 
@@ -177,5 +187,6 @@ public class GradesUploader {
         }catch (IOException e){}
         return null;
     }
+
 
 }

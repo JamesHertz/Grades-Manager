@@ -48,7 +48,6 @@ class GMStudent implements EditStudent{
 
 
     // METHODS USED TO BUILD A STUDENT :)
-
     public GMStudent setStudentNumber(int number) {
         this.number = number;
         return this;
@@ -59,18 +58,8 @@ class GMStudent implements EditStudent{
         return this;
     }
 
-    public GMStudent setStudentGrade(float grade) {
-        this.averageGrade = grade;
-        return this;
-    }
-
     public GMStudent setStudentEnrolls(EnrollsProxy enrolls) {
         this.enrolls = enrolls;
-        return this;
-    }
-
-    public GMStudent setStudentTotalCredits(int credits) {
-        this.totalCredits = credits;
         return this;
     }
 

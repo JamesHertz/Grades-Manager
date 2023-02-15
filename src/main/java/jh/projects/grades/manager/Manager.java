@@ -7,16 +7,18 @@ import jh.projects.grades.manager.exceptions.GMException;
 import jh.projects.grades.rawdata.RawCourse;
 import jh.projects.grades.rawdata.RawEnrollment;
 import jh.projects.grades.rawdata.RawStudent;
+import jh.projects.grades.rawdata.StudentRecord;
 import jh.projects.grades.uploader.CourseUploader;
+import jh.projects.grades.uploader.GradesUploader;
 import jh.projects.grades.uploader.exceptions.UploadException;
-
-import static jh.projects.grades.uploader.GradesUploader.ClipCredentials;
 
 import java.text.Collator;
 import java.util.*;
 
+import static jh.projects.grades.uploader.GradesUploader.*;
+
 // TODO: finish course thing and start working on the inserting info commands.
-public class Manager implements GradesManager{
+public class Manager implements GradesManager {
 
     // comparators used in the app
     // the first compares by name
@@ -28,10 +30,10 @@ public class Manager implements GradesManager{
     };
 
     private static final Comparator<Student> cmpByGrades = (s1, s2) -> {
-        int credits_diff =  s2.getTotalCredits() - s1.getTotalCredits();
-        if(credits_diff != 0) return credits_diff;
+        int credits_diff = s2.getTotalCredits() - s1.getTotalCredits();
+        if (credits_diff != 0) return credits_diff;
         float grades_diff = s2.getAvgGrade() - s1.getAvgGrade();
-        if(grades_diff != 0) return (grades_diff > 0) ? 1 : -1 ;
+        if (grades_diff != 0) return (grades_diff > 0) ? 1 : -1;
         return cmpByName.compare(s1, s2); // compare by name
     };
 
@@ -57,7 +59,7 @@ public class Manager implements GradesManager{
 
     private ClipCredentials credentials;
 
-    public Manager(){
+    public Manager() {
         db = new GMDataBase(DB_NAME);
 
         courses = new TreeMap<>();
@@ -70,70 +72,63 @@ public class Manager implements GradesManager{
     }
 
 
-
-    private EnrollsProxy createEnrollsProxy(int studentNumber){
+    private EnrollsProxy createEnrollsProxy(int studentNumber) {
         return () -> {
             Iterator<RawEnrollment> enrolls = db.getEnrolls(studentNumber);
             List<Enrollment> studentEnrolls = new LinkedList<>();
-            while(enrolls.hasNext()){
+            while (enrolls.hasNext()) {
                 RawEnrollment aux = enrolls.next();
                 studentEnrolls.add(new SimpleEnrollment(
-                   students.get(studentNumber),
-                   courses.get(aux.courseID()),
-                   aux.grade()
+                        students.get(studentNumber),
+                        courses.get(aux.courseID()),
+                        aux.grade()
                 ));
             }
             return studentEnrolls.iterator();
-       };
+        };
     }
 
-    private void uploadData(){
+    private void uploadData() {
         Iterator<RawStudent> sts = db.getAllStudents();
-        while(sts.hasNext()){
+        while (sts.hasNext()) {
             RawStudent aux = sts.next();
-            Student st  = new GMStudent()
-                                .setStudentName(aux.name())
-                                .setStudentNumber(aux.number())
-                                .setStudentEnrolls(createEnrollsProxy(aux.number()))
-                                .setStudentGrade(aux.avgGrade())
-                                .setStudentTotalCredits(aux.totalCredits());
-
-            students.put(aux.number(), st);
-            studentsByOrder.add(st);
-            topBoard.add(st);
+            EditStudent st = addStudent(aux.number(), aux.name());
+            st.setAvgGrade(aux.avgGrade());
+            st.setTotalCredits(aux.totalCredits());
         }
 
         Iterator<RawCourse> cs = db.getAllCourses();
-        while(cs.hasNext()){
+        while (cs.hasNext()) {
             RawCourse aux = cs.next();
             courses.put(aux.courseID(),
                     new GMCourse()
-                        .setId(aux.courseID())
-                        .setName(aux.name())
-                        .setCredits(aux.credits())
-                        .setYear(aux.year())
-                        .setSemester(Semesters.getSemester(aux.semester()))
-                        .setCode(aux.code())
+                            .setId(aux.courseID())
+                            .setName(aux.name())
+                            .setCredits(aux.credits())
+                            .setYear(aux.year())
+                            .setSemester(Semesters.getSemester(aux.semester()))
+                            .setCode(aux.code())
             );
         }
     }
 
     @Override
-    public int uploadCourses(String filename) throws GMException,  UploadException {
+    public int uploadCourses(String filename) throws GMException, UploadException {
         Iterator<RawCourse> cs = CourseUploader.getCourses(filename);
         Map<String, Course> cache = new TreeMap<>();
 
         db.startTransaction();
-        while(cs.hasNext()){
-            RawCourse raw = cs.next() ;
-            if(courses.containsKey(raw.courseID())){
+        while (cs.hasNext()) {
+            RawCourse raw = cs.next();
+            if (courses.containsKey(raw.courseID())) {
                 db.rollBack();
                 throw new CourseAlreadyExistsException(raw.courseID());
             }
 
             // todo: check if everything is okay
-            cache.put(raw.courseID(),
-                        new GMCourse()
+            cache.put(
+                    raw.courseID(),
+                    new GMCourse()
                             .setId(raw.courseID())
                             .setName(raw.name())
                             .setCredits(raw.credits())
@@ -155,8 +150,8 @@ public class Manager implements GradesManager{
     }
 
     @Override
-    public Student getStudent(int number) {
-        return students.get(number);
+    public EditStudent getStudent(int number) {
+        return (EditStudent) students.get(number);
     }
 
     @Override
@@ -188,6 +183,60 @@ public class Manager implements GradesManager{
 
     @Override
     public void update() {
-        System.out.println("taking a while :)");
+
+        db.startTransaction();
+        for (Course cs : courses.values()) {
+            Map<Integer, StudentRecord> dummy = new TreeMap<>();
+            for (int year = cs.getYear(); year <= 3; ++year) {
+                for (int sem = cs.getSemester().getId(); sem != 0 && sem <= 2; ++sem) {
+                    Iterator<StudentRecord> records = GradesUploader.getEnrolls(
+                            this.credentials, new CourseInfo(year, sem, cs.getCode())
+                    );
+
+                    if (records == null) throw new RuntimeException("Error getting " + cs.getCourseID() + " grades.");
+
+                    boolean first_time = dummy.isEmpty();
+                    while (records.hasNext()) {
+                        StudentRecord rec = records.next(), aux;
+                        if (first_time || (aux = dummy.get(rec.number())) != null
+                                && rec.grade() > aux.grade()) {
+                            dummy.put(rec.number(), rec);
+                        }
+                    }
+                }
+            }
+
+            for (StudentRecord rec : dummy.values()) {
+                if (rec.grade() < 10.0f) continue;
+
+                EditStudent st = getStudent(rec.number());
+                if (st == null) {
+                    st = addStudent(rec.number(), rec.name());
+                    students.put(rec.number(), st);
+                    db.insertStudent(rec.number(), rec.name());
+                }
+
+                int tot_credits = st.getTotalCredits();
+
+                // updates the avg grade :)
+                st.setAvgGrade((st.getAvgGrade() * tot_credits + rec.grade() * cs.getCredits()) / (tot_credits + cs.getCredits()));
+                st.setTotalCredits(tot_credits + cs.getCredits());
+                db.insertEnroll(cs.getCourseID(), rec.number(), rec.grade());
+            }
+
+        }
+
+        db.commit();
+    }
+
+    private EditStudent addStudent(int number, String name) {
+        EditStudent st = new GMStudent()
+                .setStudentName(name)
+                .setStudentNumber(number)
+                .setStudentEnrolls(createEnrollsProxy(number));
+        students.put(number, st);
+        studentsByOrder.add(st);
+        topBoard.add(st);
+        return st;
     }
 }

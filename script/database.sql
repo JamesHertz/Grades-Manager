@@ -39,3 +39,13 @@ create view MyStudent as
         where grade >= 10
         group by st_number
     );
+
+
+--- todo: start using this table below
+/*
+    create table Periods {
+        cs_id text,
+        semester int,
+        primary key(text, semester)
+    }
+ */

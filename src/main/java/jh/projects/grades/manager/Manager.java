@@ -187,6 +187,8 @@ public class Manager implements GradesManager {
         db.startTransaction();
         for (Course cs : courses.values()) {
             Map<Integer, StudentRecord> dummy = new TreeMap<>();
+
+            // fetches the grades
             for (int year = cs.getYear(); year <= 3; ++year) {
                 for (int sem = cs.getSemester().getId(); sem != 0 && sem <= 2; ++sem) {
                     Iterator<StudentRecord> records = GradesUploader.getEnrolls(
@@ -206,6 +208,7 @@ public class Manager implements GradesManager {
                 }
             }
 
+            // uploads the database and on memory datastructures
             for (StudentRecord rec : dummy.values()) {
                 if (rec.grade() < 10.0f) continue;
 

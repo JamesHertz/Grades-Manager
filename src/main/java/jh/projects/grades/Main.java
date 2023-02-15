@@ -163,7 +163,7 @@ public class Main implements CliRunListener {
     }
 
     @CliAppCommand(
-            desc = "logins in"
+            desc = "login in clip"
     )
     public void login(CliAPI api){
         String username = api.prompt("username : ");
@@ -208,81 +208,6 @@ public class Main implements CliRunListener {
             -> But that works just for final grades.
             -> Well I am just supporting final grades right now.
             -> But I somehow need to have another way of uploading the grades.
-     */
-    /*
-     // CLASSS DONE TO TEST THE DATA_BAASE MODULE
-    static class SimpleDBInter implements CliRunListener{
-        DataBase db;
-        @Override
-        public void onRun(CliAPI cliAPI) {
-            System.out.println("Creating db...");
-            db = new GMDataBase("dbs/file.db");
-        }
-        @CliAppCommand
-        public void listStudents(CliAPI api){
-            Iterator<DataBase.RawStudent> st = db.getAllStudents();
-            if(!st.hasNext())
-                System.out.println("No students :(");
-            else{
-                CliTable table = api.createTable(new String[]{"NUMBER", "NAME", "AVG-GRADE", "CREDITS"});
-                while(st.hasNext()){
-                    var aux = st.next();
-                    table.add(aux.number(), aux.name(), format("%.2f", aux.avgGrade()), aux.number());
-                }
-                table.print();
-            }
-        }
-        @CliAppCommand
-        public void listCourse(CliAPI api){
-            Iterator<DataBase.RawCourse> cs = db.getAllCourses();
-            if(!cs.hasNext())
-                System.out.println("No course!!");
-            else {
-                CliTable table = api.createTable(new String[]{"COURSE-ID", "CREDITS"});
-                while(cs.hasNext()){
-                    var aux = cs.next();
-                    table.add(aux.id(), aux.credits());
-                }
-                table.print();
-            }
-        }
-        @CliAppCommand
-        public void studentEnrolls(CliAPI api, int studentNumber){
-            listEnrolls(api, db.getEnrolls(studentNumber));
-        }
-        @CliAppCommand
-        public void courseEnrolls(CliAPI api, String courseID){
-           listEnrolls(api, db.getEnrolls(courseID));
-        }
-        private void listEnrolls(CliAPI api, Iterator<DataBase.RawEnroll> enrolls){
-            if(!enrolls.hasNext())
-                System.out.println("No enrolls :(");
-            else{
-                CliTable table = api.createTable(new String[]{"COURSE-ID", "STUDENT-NUMBER", "GRADE"});
-                while(enrolls.hasNext()){
-                    var aux = enrolls.next();
-                    table.add(aux.courseID(), aux.studentNumber(), aux.grade());
-                }
-                table.print();
-            }
-        }
-        @CliAppCommand
-        public void addStudent(int number, String name){
-            db.insertStudent(number, name);
-            System.out.println("Inserted!!!");
-        }
-        @CliAppCommand
-        public void addCourse(String courseID, int credits){
-            db.insertCourse(courseID, "", credits, 1, 1);
-            System.out.println("Inserted!!!");
-        }
-
-        @CliAppCommand
-        public void addEnroll(int studentNumber, String courseID, float grade){
-            db.insertEnroll(courseID, studentNumber, grade);
-            System.out.println("Inserted");
-        }
-    };
      */
 
     public static void main(String[] args) {

@@ -2,6 +2,7 @@ package jh.projects.grades.uploader;
 
 import static org.jsoup.Connection.*;
 
+import jh.projects.grades.rawdata.RawEnrollment;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -55,8 +56,9 @@ public class GradesUploader {
         static final String SEMESTER_PERIOD   = "s";
         static final String TRIMESTER_PERIOD  = "t";
         // EVAL_TYPE values
-        static final String NORMAL_EVAL       = "a";
-        static final String IMPROVED_EVAL     = "m";
+        // static final String NORMAL_EVAL       = "a";
+        // static final String IMPROVED_EVAL     = "m";
+        static final String[] EVALS_TYPE      =  {"a", "m"};
         // COLLEGE value
         static final String MY_COLLEGE        = "97747";
         // COURSE_CODE values
@@ -87,6 +89,10 @@ public class GradesUploader {
                     .execute();
             String cookie = res.cookie(HttpValues.COOKIE_NAME);
             String numberID = getNumberID(res.parse());
+
+            // todo: add exceptions over here :)
+            if(numberID == null) return null;
+
             return new ClipCredentials(cookie, numberID);
         } catch (IOException e) {}
         return null;
@@ -117,14 +123,13 @@ public class GradesUploader {
             data.add(new StudentRecord(number, name, grade));
         }
         return data.iterator();
+        // return data;
     }
 
     public static Iterator<StudentRecord> getEnrolls(ClipCredentials credentials, CourseInfo cs){
         try{
             Map<String, String> reqData = new HashMap<>(){{
                 put(COLLEGE, MY_COLLEGE);
-                put(PROGRAM, TARGET_PROGRAMS[0]);
-                put(EVAL_TYPE, NORMAL_EVAL);
                 put(NUMBER_ID, credentials.numberID());
                 put(COURSE_CODE, String.valueOf(cs.code()));
                 put(YEAR, String.valueOf(BASE_YEAR + cs.year()));
@@ -137,17 +142,40 @@ public class GradesUploader {
                 reqData.put(PERIOD_TYPE, SEMESTER_PERIOD);
                 reqData.put(PERIOD, String.valueOf(cs.semester()));
             }
+            // put(PROGRAM, TARGET_PROGRAMS[0]);
 
-            Response res = Jsoup.connect(ENROLLS_BASE_URL)
-                    .data(reqData)
-                    .postDataCharset(QUERY_ENCODING)
-                    .method(Method.GET)
-                    .cookie(COOKIE_NAME, credentials.cookie())
-                    .execute();
+            Map<Integer, StudentRecord> records = new TreeMap<>();//new HashMap<>();
 
-            if(res.statusCode() == 200)
-                return parseRows(res.parse());
+            for(String eval : EVALS_TYPE){
+                reqData.put(EVAL_TYPE, eval);
+
+                for(String program : TARGET_PROGRAMS){
+                    reqData.put(PROGRAM, program);
+
+                    Response res = Jsoup.connect(ENROLLS_BASE_URL)
+                        .data(reqData)
+                        .postDataCharset(QUERY_ENCODING)
+                        .method(Method.GET)
+                        .cookie(COOKIE_NAME, credentials.cookie())
+                        .execute();
+                    if(res.statusCode() != 200) return null;
+
+                    // merge grades :)
+                    Iterator<StudentRecord> it = parseRows(res.parse());
+                    while(it.hasNext()){
+                        StudentRecord rec = it.next();
+                        StudentRecord other = records.get(rec.number());
+                        if(other == null || other.grade() < rec.grade())
+                            records.put(rec.number(), rec);
+                    }
+
+                }
+
+            }
+
+            return records.values().iterator();
         }catch (IOException e){}
         return null;
     }
+
 }

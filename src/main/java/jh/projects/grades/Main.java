@@ -10,14 +10,14 @@ import jh.projects.cliparser.cliApp.api.CliAPI;
 import jh.projects.cliparser.cliApp.api.table.CliTable;
 import jh.projects.cliparser.cliApp.listeners.CliRunListener;
 import jh.projects.grades.manager.exceptions.GMException;
-import jh.projects.grades.rawdata.RawCourse;
-import jh.projects.grades.uploader.CourseUploader;
+import jh.projects.grades.uploader.GradesUploader;
 import jh.projects.grades.uploader.exceptions.UploadException;
 
 import java.util.Iterator;
 
 import static java.lang.String.format;
 import static jh.projects.grades.manager.Semesters.*;
+import static jh.projects.grades.uploader.GradesUploader.ClipCredentials;
 
 public class Main implements CliRunListener {
     // TODO: have a mini animation playing on the background (writing loading on the screen)
@@ -149,12 +149,33 @@ public class Main implements CliRunListener {
         }
     }
 
-    public void update(String mode){
-
+    @CliAppCommand(
+            desc = "fetches grades from clip"
+    )
+    public void update(CliAPI api){
+        ClipCredentials credentials = manager.getCredentials();
+        if(credentials == null){
+            System.out.println("Error: You need to login first in order to perform this operation.");
+        }else {
+            System.out.println("This is gonna take a while...");
+            manager.update();
+        }
     }
 
-    public void login(){
-
+    @CliAppCommand(
+            desc = "logins in"
+    )
+    public void login(CliAPI api){
+        String username = api.prompt("username : ");
+        char[] password = System.console().readPassword("password : ");
+        // todo: change this later :)
+        ClipCredentials credentials = GradesUploader.getStudentInfo(username, new String(password));
+        if(credentials == null)
+            System.out.println("Error trying to validated your credentials.\nMake sure you used the right username and password.");
+        else {
+            manager.setCredentials(credentials);
+            System.out.println("You've logged in :)");
+        }
     }
 
      private String format_ord_num(int num){

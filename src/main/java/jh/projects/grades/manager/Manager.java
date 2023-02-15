@@ -10,6 +10,8 @@ import jh.projects.grades.rawdata.RawStudent;
 import jh.projects.grades.uploader.CourseUploader;
 import jh.projects.grades.uploader.exceptions.UploadException;
 
+import static jh.projects.grades.uploader.GradesUploader.ClipCredentials;
+
 import java.text.Collator;
 import java.util.*;
 
@@ -53,6 +55,8 @@ public class Manager implements GradesManager{
     private final List<Student> topBoard;
     private final DataBase db;
 
+    private ClipCredentials credentials;
+
     public Manager(){
         db = new GMDataBase(DB_NAME);
 
@@ -60,6 +64,7 @@ public class Manager implements GradesManager{
         students = new TreeMap<>(); // by number
         topBoard = new ArrayList<>(DEFAULT_STUDENT_NUMBER);
         studentsByOrder = new TreeSet<>(cmpByName);
+        credentials = null;
 
         this.uploadData();
     }
@@ -101,15 +106,15 @@ public class Manager implements GradesManager{
         Iterator<RawCourse> cs = db.getAllCourses();
         while(cs.hasNext()){
             RawCourse aux = cs.next();
-            Course new_cs =  new GMCourse()
+            courses.put(aux.courseID(),
+                    new GMCourse()
                         .setId(aux.courseID())
                         .setName(aux.name())
                         .setCredits(aux.credits())
                         .setYear(aux.year())
                         .setSemester(Semesters.getSemester(aux.semester()))
-                        .setCode(aux.code());
-
-            courses.put(aux.courseID(),new_cs);
+                        .setCode(aux.code())
+            );
         }
     }
 
@@ -136,7 +141,7 @@ public class Manager implements GradesManager{
                             .setSemester(Semesters.getSemester(raw.semester()))
                             .setCode(raw.code())
             );
-            db.insertCourse(cs.next());
+            db.insertCourse(raw);
         }
         db.commit();
         courses.putAll(cache);
@@ -169,5 +174,20 @@ public class Manager implements GradesManager{
     public Iterator<Course> listAllCourses() {
         // todo: handle this mess below
         return courses.values().iterator();
+    }
+
+    @Override
+    public void setCredentials(ClipCredentials credentials) {
+        this.credentials = credentials;
+    }
+
+    @Override
+    public ClipCredentials getCredentials() {
+        return credentials;
+    }
+
+    @Override
+    public void update() {
+        System.out.println("taking a while :)");
     }
 }

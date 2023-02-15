@@ -68,6 +68,7 @@ public class GMDataBase implements DataBase{
             st.setInt(6, cs.code());
             st.executeUpdate();
         }catch (SQLException e){
+            System.out.println(cs);
             handleSQLException(e);  // todo: change this
         }
     }

@@ -2,7 +2,6 @@ package jh.projects.grades.uploader;
 
 import static org.jsoup.Connection.*;
 
-import jh.projects.grades.rawdata.RawEnrollment;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,7 +22,7 @@ public class GradesUploader {
         static final String USERNAME_FIELD  = "identificador";
         static final String PASSWORD_FIELD  = "senha";
         static final String COOKIE_NAME     = "JServSessionIdroot1112";
-        static final String COOKIE_URL = "https://clip.fct.unl.pt/utente/eu";
+        static final String COOKIE_URL      = "https://clip.fct.unl.pt/utente/eu";
 
         // URL QUERY FIELDS VALUES AND URLS USED TO FETCH COURSES RESULTS:
 
@@ -56,8 +55,6 @@ public class GradesUploader {
         static final String SEMESTER_PERIOD   = "s";
         static final String TRIMESTER_PERIOD  = "t";
         // EVAL_TYPE values
-        // static final String NORMAL_EVAL       = "a";
-        // static final String IMPROVED_EVAL     = "m";
         static final String[] EVALS_TYPE      =  {"a", "m"};
         // COLLEGE value
         static final String MY_COLLEGE        = "97747";
@@ -65,7 +62,7 @@ public class GradesUploader {
         static final String[] TARGET_PROGRAMS = {"472", "524"};
 
         // Year I started to have classes in college
-        static final int BASE_YEAR = 2020;
+        static final int BASE_YEAR  = 2020;
 
         // encoding used to encode the url query parameters
         static final String QUERY_ENCODING = "ISO-8859-1";
@@ -180,9 +177,8 @@ public class GradesUploader {
                     }
 
                     // by now :)
-                    if(empty_times == 2) break;
                 }
-
+                if(empty_times == 2) break;
 
             }
 

@@ -185,6 +185,7 @@ public class Manager implements GradesManager {
     public void update() {
 
         db.startTransaction();
+        Set<Integer> originals = new HashSet<>();
         for (Course cs : courses.values()) {
             Map<Integer, StudentRecord> dummy = new TreeMap<>();
 
@@ -197,8 +198,6 @@ public class Manager implements GradesManager {
 
                     if (records == null){
                         db.rollBack();
-                        System.out.println("year=" + year + "; sem=" + sem);
-
                         throw new RuntimeException(
                                 String.format("Error getting '%s' grades [year= %d; sem=%d]",
                                         cs.getCourseID(), year, sem
@@ -209,7 +208,8 @@ public class Manager implements GradesManager {
                     boolean first_time = dummy.isEmpty();
                     while (records.hasNext()) {
                         StudentRecord rec = records.next(), aux;
-                        if (first_time || (aux = dummy.get(rec.number())) != null
+                        if(first_time) originals.add(rec.number()); // originals :)
+                        if (originals.contains(rec.number())|| (aux = dummy.get(rec.number())) != null
                                 && rec.grade() > aux.grade()) {
                             dummy.put(rec.number(), rec);
                         }

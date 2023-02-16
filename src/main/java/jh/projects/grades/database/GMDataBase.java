@@ -64,7 +64,7 @@ public class GMDataBase implements DataBase{
             st.setString(2, cs.name());
             st.setInt(3, cs.credits());
             st.setInt(4, cs.year());
-            st.setInt(5, cs.semester());
+            st.setInt(5, cs.periodID());
             st.setInt(6, cs.code());
             st.executeUpdate();
         }catch (SQLException e){

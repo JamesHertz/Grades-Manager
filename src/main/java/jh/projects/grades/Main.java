@@ -10,14 +10,13 @@ import jh.projects.cliparser.cliApp.api.CliAPI;
 import jh.projects.cliparser.cliApp.api.table.CliTable;
 import jh.projects.cliparser.cliApp.listeners.CliRunListener;
 import jh.projects.grades.manager.exceptions.GMException;
-import jh.projects.grades.rawdata.StudentRecord;
 import jh.projects.grades.uploader.GradesUploader;
 import jh.projects.grades.uploader.exceptions.UploadException;
 
 import java.util.Iterator;
 
 import static java.lang.String.format;
-import static jh.projects.grades.manager.Semesters.*;
+import static jh.projects.grades.manager.Period.*;
 import static jh.projects.grades.uploader.GradesUploader.ClipCredentials;
 
 public class Main implements CliRunListener {
@@ -111,8 +110,8 @@ public class Main implements CliRunListener {
         }
     }
 
-    private String semToString(Semesters sem){
-        return (sem == THIRD_TRIMESTER) ? "3rd trimester" : format_ord_num(sem.getId()) + " semester";
+    private String semToString(Period sem){
+        return (sem == THIRD_TRIMESTER) ? "3rd trimester" : format_ord_num(sem.getId()) + " periodID";
     }
 
     @CliAppCommand(
@@ -130,12 +129,12 @@ public class Main implements CliRunListener {
 
                 System.out.printf("# %s (%s)\n", cs.getCourseID(), cs.getName());
                 System.out.println("credits: " + cs.getCredits());
-                System.out.printf("period: %s year - %s\n", format_ord_num(cs.getYear()), semToString(cs.getSemester()));
+                System.out.printf("periodID: %s year - %s\n", format_ord_num(cs.getYear()), semToString(cs.getPeriod()));
                 System.out.println();
            }
         }
 
-        // try to print the courses by year and by semester
+        // try to print the courses by year and by periodID
         // then by id number
     }
 

@@ -4,7 +4,7 @@ public class GMCourse implements Course{
 
     private  String id, name;
     private  int year, credits, code;
-    private  Semesters semester;
+    private Period semester;
 
     @Override
     public String getCourseID() {
@@ -27,7 +27,7 @@ public class GMCourse implements Course{
     }
 
     @Override
-    public Semesters getSemester() {
+    public Period getPeriod() {
         return semester;
     }
 
@@ -63,7 +63,7 @@ public class GMCourse implements Course{
         return this;
     }
 
-    public GMCourse setSemester(Semesters semester) {
+    public GMCourse setSemester(Period semester) {
         this.semester = semester;
         return this;
     }

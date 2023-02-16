@@ -16,6 +16,7 @@ import java.text.Collator;
 import java.util.*;
 
 import static jh.projects.grades.uploader.GradesUploader.*;
+import static jh.projects.grades.manager.Period.*;
 
 // TODO: finish course thing and start working on the inserting info commands.
 public class Manager implements GradesManager {
@@ -106,7 +107,7 @@ public class Manager implements GradesManager {
                             .setName(aux.name())
                             .setCredits(aux.credits())
                             .setYear(aux.year())
-                            .setSemester(Semesters.getSemester(aux.semester()))
+                            .setSemester(Period.getSemester(aux.periodID()))
                             .setCode(aux.code())
             );
         }
@@ -133,7 +134,7 @@ public class Manager implements GradesManager {
                             .setName(raw.name())
                             .setCredits(raw.credits())
                             .setYear(raw.year())
-                            .setSemester(Semesters.getSemester(raw.semester()))
+                            .setSemester(Period.getSemester(raw.periodID()))
                             .setCode(raw.code())
             );
             db.insertCourse(raw);
@@ -189,14 +190,18 @@ public class Manager implements GradesManager {
         for (Course cs : courses.values()) {
             Map<Integer, StudentRecord> dummy = new TreeMap<>();
 
-            // fetches the grades
             for (int year = cs.getYear(); year <= 3; ++year) {
-                for (int sem = cs.getSemester().getId(); sem <= 2; ++sem) {
+                boolean is_semester = cs.getPeriod() != THIRD_TRIMESTER;
+
+                int sem = (is_semester && year != cs.getYear()) ? FIRST_SEMESTER.getId() : cs.getPeriod().getId();
+
+                do {
+
                     Iterator<StudentRecord> records = GradesUploader.getEnrolls(
                             this.credentials, new CourseInfo(year, sem, cs.getCode())
                     );
 
-                    if (records == null){
+                    if (records == null) {
                         db.rollBack();
                         throw new RuntimeException(
                                 String.format("Error getting '%s' grades [year= %d; sem=%d]",
@@ -207,16 +212,16 @@ public class Manager implements GradesManager {
 
                     boolean first_time = dummy.isEmpty();
                     while (records.hasNext()) {
-                        StudentRecord rec = records.next(), aux;
-                        if(first_time) originals.add(rec.number()); // originals :)
-                        if (originals.contains(rec.number())|| (aux = dummy.get(rec.number())) != null
-                                && rec.grade() > aux.grade()) {
+                        StudentRecord rec = records.next();
+                        StudentRecord aux = dummy.get(rec.number());
+                        if (first_time || aux == null && originals.contains(rec.number()) ||
+                                aux != null && rec.grade() > aux.grade()) {
                             dummy.put(rec.number(), rec);
+                            originals.add(rec.number()); // originals :)
                         }
                     }
-
-                    if(sem == 0) break; // avoid problems when it's a trimester ;)
-                }
+                    ++sem;
+                } while (sem <= 2 && is_semester);
             }
 
             // uploads the database and on memory datastructures
@@ -237,11 +242,11 @@ public class Manager implements GradesManager {
                 st.setTotalCredits(tot_credits + cs.getCredits());
                 db.insertEnroll(cs.getCourseID(), rec.number(), rec.grade());
             }
-
         }
 
         db.commit();
     }
+
 
     private EditStudent addStudent(int number, String name) {
         EditStudent st = new GMStudent()

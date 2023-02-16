@@ -5,7 +5,7 @@ public interface Course {
     String getName();
     int getYear();
     int getCredits();
-    Semesters getSemester();
+    Period getPeriod();
     int getCode();
 
     // TODO: FOR THE NEAR FUTURE
